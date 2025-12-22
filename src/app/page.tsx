@@ -21,8 +21,8 @@ export default function Home() {
         <main className="flex-1 flex flex-col items-center justify-center px-4 py-16 md:py-24">
         <div className="text-center max-w-3xl mx-auto mb-10">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 text-balance">
-            Find Your Perfect
-            <span className="text-violet-600"> Wedding Officiant</span>
+            Find your perfect
+            <span className="text-violet-600"> wedding officiant</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto text-balance">
             Search over 22,000 registered officiants across Ontario. Find
