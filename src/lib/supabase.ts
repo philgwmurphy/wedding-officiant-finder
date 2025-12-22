@@ -124,34 +124,22 @@ export async function getOfficiantById(id: number): Promise<Officiant | null> {
  * Get all unique affiliations for filter UI
  */
 export async function getAffiliations(): Promise<string[]> {
-  const { data, error } = await supabase
-    .from("officiants")
-    .select("affiliation")
-    .order("affiliation");
-
-  if (error) {
-    throw new Error(`Failed to get affiliations: ${error.message}`);
-  }
-
-  const unique = Array.from(new Set((data || []).map((d) => d.affiliation)));
-  return unique.filter(Boolean);
+  return getCachedList({
+    cacheTable: "cached_affiliations",
+    column: "affiliation",
+    fallback: getAffiliationsFromOfficiants,
+  });
 }
 
 /**
  * Get all unique municipalities for autocomplete
  */
 export async function getMunicipalities(): Promise<string[]> {
-  const { data, error } = await supabase
-    .from("officiants")
-    .select("municipality")
-    .order("municipality");
-
-  if (error) {
-    throw new Error(`Failed to get municipalities: ${error.message}`);
-  }
-
-  const unique = Array.from(new Set((data || []).map((d) => d.municipality)));
-  return unique.filter(Boolean);
+  return getCachedList({
+    cacheTable: "cached_municipalities",
+    column: "municipality",
+    fallback: getMunicipalitiesFromOfficiants,
+  });
 }
 
 /**
@@ -249,4 +237,78 @@ function dbToOfficiant(record: DbOfficiant): Officiant {
     lat: record.lat || undefined,
     lng: record.lng || undefined,
   };
+}
+
+interface CachedListConfig {
+  cacheTable: string;
+  column: string;
+  fallback: () => Promise<string[]>;
+}
+
+async function getCachedList({
+  cacheTable,
+  column,
+  fallback,
+}: CachedListConfig): Promise<string[]> {
+  const { data, error } = await supabase
+    .from(cacheTable)
+    .select(column)
+    .order(column);
+
+  if (error) {
+    console.warn(`Falling back to live ${column} query:`, error.message);
+    return fallback();
+  }
+
+  const cachedValues = (data || [])
+    .map((record) => (record as Record<string, string | null>)[column])
+    .filter(Boolean) as string[];
+
+  if (cachedValues.length === 0) {
+    return fallback();
+  }
+
+  return cachedValues;
+}
+
+async function getAffiliationsFromOfficiants(): Promise<string[]> {
+  const { data, error } = await supabase
+    .from("officiants")
+    .select("affiliation")
+    .order("affiliation");
+
+  if (error) {
+    throw new Error(`Failed to get affiliations: ${error.message}`);
+  }
+
+  return getUniqueStrings(data, "affiliation");
+}
+
+async function getMunicipalitiesFromOfficiants(): Promise<string[]> {
+  const { data, error } = await supabase
+    .from("officiants")
+    .select("municipality")
+    .order("municipality");
+
+  if (error) {
+    throw new Error(`Failed to get municipalities: ${error.message}`);
+  }
+
+  return getUniqueStrings(data, "municipality");
+}
+
+function getUniqueStrings(
+  records: { [key: string]: string | null }[] | null,
+  column: string
+): string[] {
+  const unique = new Set<string>();
+
+  (records || []).forEach((record) => {
+    const value = record[column];
+    if (value) {
+      unique.add(value);
+    }
+  });
+
+  return Array.from(unique);
 }
