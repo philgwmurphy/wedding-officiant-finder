@@ -96,14 +96,17 @@ function SearchResultsSkeleton() {
 
 async function SearchResults({
   searchParams,
+  breadcrumbs,
 }: {
   searchParams: SearchPageProps["searchParams"];
+  breadcrumbs: object;
 }) {
   const data = await getSearchResults(searchParams);
 
   if (!data.success) {
     return (
       <div className="text-center py-12">
+        <JsonLd data={breadcrumbs} />
         <p className="text-gray-500">
           Something went wrong. Please try again.
         </p>
@@ -116,6 +119,7 @@ async function SearchResults({
   if (results.length === 0) {
     return (
       <div className="text-center py-12">
+        <JsonLd data={breadcrumbs} />
         <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <svg
             className="w-8 h-8 text-gray-400"
@@ -144,8 +148,34 @@ async function SearchResults({
     );
   }
 
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://onweddingofficiants.ca";
+
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: results.map((officiant, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: `${siteUrl}/officiant/${officiant.id}`,
+      name: `${officiant.firstName} ${officiant.lastName}`,
+      item: {
+        "@type": "Person",
+        name: `${officiant.firstName} ${officiant.lastName}`,
+        affiliation: officiant.affiliation,
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: officiant.municipality,
+          addressRegion: "Ontario",
+          addressCountry: "CA",
+        },
+      },
+    })),
+  };
+
   return (
     <>
+      <JsonLd data={[breadcrumbs, itemListSchema]} />
       <p className="text-sm text-gray-500 mb-6">
         Found <span className="font-medium">{results.length}</span> officiants
         {searchParams.location && (
@@ -181,41 +211,40 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
 
   return (
     <>
-      <JsonLd data={breadcrumbs} />
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between gap-4">
-            <Link
-              href="/"
-              className="text-xl font-bold text-violet-600 shrink-0"
-            >
-              Officiant Finder
-            </Link>
-            <SearchForm
-              initialLocation={searchParams.location}
-              initialAffiliation={searchParams.affiliation}
-              compact
-            />
+        <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+          <div className="max-w-6xl mx-auto px-4 py-4">
+            <div className="flex items-center justify-between gap-4">
+              <Link
+                href="/"
+                className="text-xl font-bold text-violet-600 shrink-0"
+              >
+                Officiant Finder
+              </Link>
+              <SearchForm
+                initialLocation={searchParams.location}
+                initialAffiliation={searchParams.affiliation}
+                compact
+              />
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">
-            {searchParams.location
-              ? `Officiants near ${searchParams.location}`
-              : "Search Results"}
-          </h1>
-        </div>
+        {/* Main Content */}
+        <main className="max-w-6xl mx-auto px-4 py-8">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-gray-900">
+              {searchParams.location
+                ? `Officiants near ${searchParams.location}`
+                : "Search Results"}
+            </h1>
+          </div>
 
-        <Suspense fallback={<SearchResultsSkeleton />}>
-          <SearchResults searchParams={searchParams} />
-        </Suspense>
-      </main>
+          <Suspense fallback={<SearchResultsSkeleton />}>
+            <SearchResults breadcrumbs={breadcrumbs} searchParams={searchParams} />
+          </Suspense>
+        </main>
       </div>
     </>
   );
