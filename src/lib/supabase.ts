@@ -264,7 +264,9 @@ async function getCachedList({
     return fallback();
   }
 
-  const cachedRecords = data.filter(
+  const rows = data as Array<Record<string, string | null> | { error: true }>;
+
+  const cachedRecords = rows.filter(
     (record): record is Record<string, string | null> =>
       record !== null && typeof record === "object" && !("error" in record)
   );
