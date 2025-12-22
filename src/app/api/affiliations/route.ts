@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getMunicipalities } from "@/lib/supabase";
+import { getAffiliations } from "@/lib/supabase";
 
 const CACHE_HEADERS = {
   "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
@@ -7,22 +7,22 @@ const CACHE_HEADERS = {
 
 export async function GET() {
   try {
-    const municipalities = await getMunicipalities();
+    const affiliations = await getAffiliations();
 
     return NextResponse.json(
       {
         success: true,
-        municipalities,
-        count: municipalities.length,
+        affiliations,
+        count: affiliations.length,
       },
       { headers: CACHE_HEADERS }
     );
   } catch (error) {
-    console.error("Get municipalities error:", error);
+    console.error("Get affiliations error:", error);
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Failed to get municipalities",
+        error: error instanceof Error ? error.message : "Failed to get affiliations",
       },
       { status: 500 }
     );
