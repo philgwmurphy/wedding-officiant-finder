@@ -192,7 +192,7 @@ export default function Home() {
             <p>
               Data sourced from the{" "}
               <a
-                href="https://data.ontario.ca/dataset/persons-authorized-to-solemnize-marriage-in-ontario"
+                href="https://data.ontario.ca/dataset/registered-marriage-officiants"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-violet-600 hover:underline"
