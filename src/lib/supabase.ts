@@ -260,9 +260,11 @@ async function getCachedList({
     return fallback();
   }
 
-  const cachedValues = (data || [])
-    .map((record) => (record as Record<string, string | null>)[column])
-    .filter(Boolean) as string[];
+  const cachedRecords = (data ?? []) as Array<Record<string, string | null>>;
+
+  const cachedValues = cachedRecords
+    .map((record) => record[column])
+    .filter((value): value is string => Boolean(value));
 
   if (cachedValues.length === 0) {
     return fallback();
