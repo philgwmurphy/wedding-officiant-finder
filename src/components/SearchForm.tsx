@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import useSWR from "swr";
 import { useRouter } from "next/navigation";
 
 interface SearchFormProps {
@@ -8,6 +9,35 @@ interface SearchFormProps {
   initialAffiliation?: string;
   compact?: boolean;
 }
+
+const MUNICIPALITIES_CACHE_KEY = "municipalities_cache_v1";
+
+const fetchMunicipalities = async () => {
+  const cached =
+    typeof window !== "undefined"
+      ? window.sessionStorage.getItem(MUNICIPALITIES_CACHE_KEY)
+      : null;
+
+  if (cached) {
+    return JSON.parse(cached) as string[];
+  }
+
+  const response = await fetch("/api/municipalities");
+  const data = await response.json();
+
+  if (!data.success) {
+    throw new Error(data.error || "Failed to load municipalities");
+  }
+
+  if (typeof window !== "undefined") {
+    window.sessionStorage.setItem(
+      MUNICIPALITIES_CACHE_KEY,
+      JSON.stringify(data.municipalities)
+    );
+  }
+
+  return data.municipalities as string[];
+};
 
 export default function SearchForm({
   initialLocation = "",
@@ -17,28 +47,24 @@ export default function SearchForm({
   const router = useRouter();
   const [location, setLocation] = useState(initialLocation);
   const [affiliation, setAffiliation] = useState(initialAffiliation);
-  const [municipalities, setMunicipalities] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const { data: municipalities = [] } = useSWR(
+    "municipalities",
+    fetchMunicipalities,
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 1000 * 60 * 60, // Align with API cache
+    }
+  );
 
   // Keep local state in sync when navigating between searches on the results page
   useEffect(() => {
     setLocation(initialLocation);
     setAffiliation(initialAffiliation);
   }, [initialLocation, initialAffiliation]);
-
-  // Fetch municipalities for autocomplete
-  useEffect(() => {
-    fetch("/api/municipalities")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          setMunicipalities(data.municipalities);
-        }
-      })
-      .catch(console.error);
-  }, []);
 
   // Filter suggestions as user types
   useEffect(() => {
