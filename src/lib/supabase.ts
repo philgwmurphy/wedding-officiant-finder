@@ -1,6 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Officiant, OfficiantSearchResult, SearchParams } from "@/types/officiant";
-import { calculateDistance } from "./geocode";
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -28,76 +27,55 @@ export interface DbOfficiant {
   updated_at: string;
 }
 
+type SearchOfficiantRpcRow = {
+  id: number;
+  first_name: string;
+  last_name: string;
+  municipality: string;
+  affiliation: string;
+  lat: number | null;
+  lng: number | null;
+  distance_km: number | null;
+};
+
 /**
  * Search officiants with optional location-based filtering
  */
 export async function searchOfficiants(
   params: SearchParams
 ): Promise<OfficiantSearchResult[]> {
-  let query = supabase
-    .from("officiants")
-    .select("*")
-    .order("last_name", { ascending: true });
-
-  // Filter by affiliation if provided
-  if (params.affiliation) {
-    query = query.ilike("affiliation", `%${params.affiliation}%`);
-  }
-
-  // Full-text search on name
-  if (params.query) {
-    query = query.or(
-      `first_name.ilike.%${params.query}%,last_name.ilike.%${params.query}%,municipality.ilike.%${params.query}%`
-    );
-  }
-
-  // Filter by municipality if location is a direct match
-  if (params.location && !params.lat) {
-    query = query.ilike("municipality", `%${params.location}%`);
-  }
-
-  // Pagination
   const limit = params.limit || 50;
   const offset = params.offset || 0;
-  query = query.range(offset, offset + limit - 1);
 
-  const { data, error } = await query;
+  const { data, error } = await supabase.rpc<SearchOfficiantRpcRow[]>(
+    "search_officiants_rpc",
+    {
+      p_query: params.query ?? null,
+      p_affiliation: params.affiliation ?? null,
+      p_municipality: params.lat ? null : params.location ?? null,
+      p_lat: params.lat ?? null,
+      p_lng: params.lng ?? null,
+      p_radius: params.radius ?? null,
+      p_limit: limit,
+      p_offset: offset,
+    }
+  );
 
   if (error) {
     console.error("Search error:", error);
     throw new Error(`Search failed: ${error.message}`);
   }
 
-  let results: OfficiantSearchResult[] = (data || []).map(dbToOfficiant);
-
-  // If we have coordinates, calculate distances and filter by radius
-  if (params.lat && params.lng) {
-    results = results
-      .map((officiant) => {
-        if (officiant.lat && officiant.lng) {
-          return {
-            ...officiant,
-            distance: calculateDistance(
-              params.lat!,
-              params.lng!,
-              officiant.lat,
-              officiant.lng
-            ),
-          };
-        }
-        return officiant;
-      })
-      .filter((officiant) => {
-        // If radius is specified, filter by it
-        if (params.radius && officiant.distance !== undefined) {
-          return officiant.distance <= params.radius;
-        }
-        return true;
-      })
-      .sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity));
-  }
-
-  return results;
+  return (data || []).map((row) => ({
+    id: row.id,
+    firstName: row.first_name,
+    lastName: row.last_name,
+    municipality: row.municipality,
+    affiliation: row.affiliation,
+    lat: row.lat ?? undefined,
+    lng: row.lng ?? undefined,
+    distance: row.distance_km ?? undefined,
+  }));
 }
 
 /**
