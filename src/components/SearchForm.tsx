@@ -22,6 +22,12 @@ export default function SearchForm({
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Keep local state in sync when navigating between searches on the results page
+  useEffect(() => {
+    setLocation(initialLocation);
+    setAffiliation(initialAffiliation);
+  }, [initialLocation, initialAffiliation]);
+
   // Fetch municipalities for autocomplete
   useEffect(() => {
     fetch("/api/municipalities")
