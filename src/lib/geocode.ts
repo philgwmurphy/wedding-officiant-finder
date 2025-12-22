@@ -5,6 +5,18 @@ const NOMINATIM_BASE = "https://nominatim.openstreetmap.org/search";
 // In-memory cache for geocoding results during sync operations
 const geocodeCache = new Map<string, GeocodedMunicipality | null>();
 
+const normalizeCacheKey = (value: string): string => value.toLowerCase().trim();
+
+const normalizePostalCode = (postalCode: string): string => {
+  const compact = postalCode.replace(/\s+/g, "").toUpperCase();
+
+  if (/^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(compact)) {
+    return `${compact.slice(0, 3)} ${compact.slice(3)}`;
+  }
+
+  return postalCode.trim();
+};
+
 /**
  * Geocode a municipality name to lat/lng using Nominatim (OpenStreetMap)
  * Adds ", Ontario, Canada" to improve accuracy
@@ -13,7 +25,7 @@ export async function geocodeMunicipality(
   municipality: string
 ): Promise<GeocodedMunicipality | null> {
   // Check cache first
-  const cacheKey = municipality.toLowerCase().trim();
+  const cacheKey = normalizeCacheKey(municipality);
   if (geocodeCache.has(cacheKey)) {
     return geocodeCache.get(cacheKey) || null;
   }
@@ -59,6 +71,60 @@ export async function geocodeMunicipality(
     return result;
   } catch (error) {
     console.error(`Geocoding error for ${municipality}:`, error);
+    geocodeCache.set(cacheKey, null);
+    return null;
+  }
+}
+
+export async function geocodePostalCode(
+  postalCode: string
+): Promise<GeocodedMunicipality | null> {
+  const normalizedPostalCode = normalizePostalCode(postalCode);
+  const cacheKey = normalizeCacheKey(normalizedPostalCode);
+
+  if (geocodeCache.has(cacheKey)) {
+    return geocodeCache.get(cacheKey) || null;
+  }
+
+  const url = new URL(NOMINATIM_BASE);
+  url.searchParams.set("postalcode", normalizedPostalCode);
+  url.searchParams.set("countrycodes", "ca");
+  url.searchParams.set("format", "json");
+  url.searchParams.set("limit", "1");
+
+  try {
+    const response = await fetch(url.toString(), {
+      headers: {
+        "User-Agent": "WeddingOfficiantFinder/1.0 (contact@example.com)",
+      },
+    });
+
+    if (!response.ok) {
+      console.error(
+        `Postal code geocoding failed for ${normalizedPostalCode}: ${response.status}`
+      );
+      geocodeCache.set(cacheKey, null);
+      return null;
+    }
+
+    const results = await response.json();
+
+    if (results.length === 0) {
+      console.warn(`No geocoding results for postal code: ${normalizedPostalCode}`);
+      geocodeCache.set(cacheKey, null);
+      return null;
+    }
+
+    const result: GeocodedMunicipality = {
+      name: normalizedPostalCode,
+      lat: parseFloat(results[0].lat),
+      lng: parseFloat(results[0].lon),
+    };
+
+    geocodeCache.set(cacheKey, result);
+    return result;
+  } catch (error) {
+    console.error(`Geocoding error for postal code ${normalizedPostalCode}:`, error);
     geocodeCache.set(cacheKey, null);
     return null;
   }

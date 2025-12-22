@@ -9,6 +9,19 @@ interface SearchFormProps {
   compact?: boolean;
 }
 
+const POSTAL_CODE_REGEX = /^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/i;
+
+const normalizeLocationInput = (value: string): string => {
+  const trimmed = value.trim();
+
+  if (POSTAL_CODE_REGEX.test(trimmed)) {
+    const compact = trimmed.replace(/\s+/g, "").toUpperCase();
+    return `${compact.slice(0, 3)} ${compact.slice(3)}`;
+  }
+
+  return trimmed;
+};
+
 export default function SearchForm({
   initialLocation = "",
   initialAffiliation = "",
@@ -55,8 +68,10 @@ export default function SearchForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const normalizedLocation = normalizeLocationInput(location);
+
     const params = new URLSearchParams();
-    if (location) params.set("location", location);
+    if (normalizedLocation) params.set("location", normalizedLocation);
     if (affiliation) params.set("affiliation", affiliation);
 
     router.push(`/search?${params.toString()}`);
@@ -79,7 +94,7 @@ export default function SearchForm({
             onChange={(e) => setLocation(e.target.value)}
             onFocus={() => setShowSuggestions(true)}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-            placeholder="City or town..."
+            placeholder="City, town, or postal code (with or without space)..."
             className="input-field text-sm py-2"
           />
           {showSuggestions && filteredSuggestions.length > 0 && (
@@ -113,7 +128,7 @@ export default function SearchForm({
               htmlFor="location"
               className="block text-sm font-medium text-gray-700 mb-1.5"
             >
-              Where is your wedding?
+              Where is your wedding? (city or postal code)
             </label>
             <div className="relative">
               <svg
@@ -143,7 +158,7 @@ export default function SearchForm({
                 onChange={(e) => setLocation(e.target.value)}
                 onFocus={() => setShowSuggestions(true)}
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                placeholder="Enter city or town in Ontario"
+                placeholder="Enter city, town, or postal code in Ontario (spaces optional)"
                 className="input-field pl-10"
               />
             </div>
