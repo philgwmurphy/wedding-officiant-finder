@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
 
@@ -12,15 +12,39 @@ interface SearchFormProps {
 
 const MUNICIPALITIES_CACHE_KEY = "municipalities_cache_v1";
 
-const fetchMunicipalities = async () => {
-  const cached =
-    typeof window !== "undefined"
-      ? window.sessionStorage.getItem(MUNICIPALITIES_CACHE_KEY)
-      : null;
+const getCachedMunicipalities = () => {
+  if (typeof window === "undefined") return null;
 
-  if (cached) {
+  const cached = window.sessionStorage.getItem(MUNICIPALITIES_CACHE_KEY);
+
+  if (!cached) return null;
+
+  try {
     return JSON.parse(cached) as string[];
+  } catch (error) {
+    console.warn("Failed to parse cached municipalities", error);
+    window.sessionStorage.removeItem(MUNICIPALITIES_CACHE_KEY);
+    return null;
   }
+};
+
+const persistMunicipalities = (municipalities: string[]) => {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.sessionStorage.setItem(
+      MUNICIPALITIES_CACHE_KEY,
+      JSON.stringify(municipalities)
+    );
+  } catch (error) {
+    console.warn("Failed to cache municipalities", error);
+  }
+};
+
+const fetchMunicipalities = async () => {
+  const cached = getCachedMunicipalities();
+
+  if (cached) return cached;
 
   const response = await fetch("/api/municipalities");
   const data = await response.json();
@@ -29,12 +53,7 @@ const fetchMunicipalities = async () => {
     throw new Error(data.error || "Failed to load municipalities");
   }
 
-  if (typeof window !== "undefined") {
-    window.sessionStorage.setItem(
-      MUNICIPALITIES_CACHE_KEY,
-      JSON.stringify(data.municipalities)
-    );
-  }
+  persistMunicipalities(data.municipalities);
 
   return data.municipalities as string[];
 };
@@ -51,12 +70,17 @@ export default function SearchForm({
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const cachedMunicipalities = useMemo(getCachedMunicipalities, []);
+
   const { data: municipalities = [] } = useSWR(
     "municipalities",
     fetchMunicipalities,
     {
       revalidateOnFocus: false,
       dedupingInterval: 1000 * 60 * 60, // Align with API cache
+      fallbackData: cachedMunicipalities ?? undefined,
+      revalidateIfStale: !cachedMunicipalities,
+      revalidateOnMount: !cachedMunicipalities,
     }
   );
 
