@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { searchOfficiants } from "@/lib/supabase";
-import { geocodeMunicipality } from "@/lib/geocode";
+import { geocodeMunicipality, geocodePostalCode } from "@/lib/geocode";
 import type { SearchParams } from "@/types/officiant";
 
 export async function GET(request: NextRequest) {
@@ -23,11 +23,23 @@ export async function GET(request: NextRequest) {
     };
 
     // If location is provided, try to geocode it for radius search
-    if (params.location) {
-      const geocoded = await geocodeMunicipality(params.location);
-      if (geocoded) {
-        params.lat = geocoded.lat;
-        params.lng = geocoded.lng;
+    const rawLocation = params.location?.trim();
+    params.location = rawLocation;
+
+    if (rawLocation) {
+      const postalCodePattern = /^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/i;
+      if (postalCodePattern.test(rawLocation)) {
+        const geocodedPostal = await geocodePostalCode(rawLocation);
+        if (geocodedPostal) {
+          params.lat = geocodedPostal.lat;
+          params.lng = geocodedPostal.lng;
+        }
+      } else {
+        const geocodedMunicipality = await geocodeMunicipality(rawLocation);
+        if (geocodedMunicipality) {
+          params.lat = geocodedMunicipality.lat;
+          params.lng = geocodedMunicipality.lng;
+        }
       }
     }
 
