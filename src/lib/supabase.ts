@@ -260,7 +260,14 @@ async function getCachedList({
     return fallback();
   }
 
-  const cachedRecords = (data ?? []) as Array<Record<string, string | null>>;
+  if (!Array.isArray(data)) {
+    return fallback();
+  }
+
+  const cachedRecords = data.filter(
+    (record): record is Record<string, string | null> =>
+      record !== null && typeof record === "object" && !("error" in record)
+  );
 
   const cachedValues = cachedRecords
     .map((record) => record[column])
