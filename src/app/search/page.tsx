@@ -7,6 +7,8 @@ import JsonLd from "@/components/JsonLd";
 import { generateBreadcrumbSchema } from "@/lib/schema";
 import type { OfficiantSearchResult } from "@/types/officiant";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://onweddingofficiants.ca";
+
 interface SearchPageProps {
   searchParams: {
     location?: string;
@@ -21,6 +23,8 @@ export async function generateMetadata({
 }: SearchPageProps): Promise<Metadata> {
   const location = searchParams.location;
   const affiliation = searchParams.affiliation;
+  const searchQuery = buildSearchQuery(searchParams);
+  const canonical = `${SITE_URL}/search${searchQuery ? `?${searchQuery}` : ""}`;
 
   let title = "Search Wedding Officiants";
   let description = "Search registered wedding officiants across Ontario, Canada.";
@@ -43,10 +47,13 @@ export async function generateMetadata({
       title,
       description,
     },
+    alternates: {
+      canonical,
+    },
   };
 }
 
-async function getSearchResults(params: SearchPageProps["searchParams"]) {
+function buildSearchQuery(params: SearchPageProps["searchParams"]) {
   const searchParams = new URLSearchParams();
 
   if (params.location) searchParams.set("location", params.location);
@@ -54,12 +61,18 @@ async function getSearchResults(params: SearchPageProps["searchParams"]) {
   if (params.q) searchParams.set("q", params.q);
   if (params.radius) searchParams.set("radius", params.radius);
 
+  return searchParams.toString();
+}
+
+async function getSearchResults(params: SearchPageProps["searchParams"]) {
+  const searchParams = buildSearchQuery(params);
+
   // Use absolute URL for server-side fetch
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
   try {
     const response = await fetch(
-      `${baseUrl}/api/search?${searchParams.toString()}`,
+      `${baseUrl}/api/search?${searchParams}`,
       { cache: "no-store" }
     );
 
