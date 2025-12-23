@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface SearchFormProps {
@@ -10,6 +10,13 @@ interface SearchFormProps {
 }
 
 const POSTAL_CODE_REGEX = /^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/i;
+const MUNICIPALITIES_CACHE_KEY = "municipalities-cache-v1";
+const MUNICIPALITIES_CACHE_TTL_MS = 1000 * 60 * 60;
+
+type MunicipalitiesResponse = {
+  success: boolean;
+  municipalities: string[];
+};
 
 const normalizeLocationInput = (value: string): string => {
   const trimmed = value.trim();
@@ -20,6 +27,45 @@ const normalizeLocationInput = (value: string): string => {
   }
 
   return trimmed;
+};
+
+const readCachedMunicipalities = (): string[] | null => {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const cached = window.sessionStorage.getItem(MUNICIPALITIES_CACHE_KEY);
+    if (!cached) return null;
+
+    const parsed = JSON.parse(cached) as {
+      municipalities: string[];
+      timestamp: number;
+    };
+
+    const isFresh = Date.now() - parsed.timestamp < MUNICIPALITIES_CACHE_TTL_MS;
+    if (isFresh && Array.isArray(parsed.municipalities)) {
+      return parsed.municipalities;
+    }
+
+    window.sessionStorage.removeItem(MUNICIPALITIES_CACHE_KEY);
+  } catch (error) {
+    console.error("Failed to read municipalities cache", error);
+  }
+
+  return null;
+};
+
+const storeMunicipalities = (municipalities: string[]): void => {
+  if (typeof window === "undefined") return;
+
+  try {
+    const payload = JSON.stringify({
+      municipalities,
+      timestamp: Date.now(),
+    });
+    window.sessionStorage.setItem(MUNICIPALITIES_CACHE_KEY, payload);
+  } catch (error) {
+    console.error("Failed to store municipalities cache", error);
+  }
 };
 
 export default function SearchForm({
@@ -34,6 +80,7 @@ export default function SearchForm({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+  const hasRequestedMunicipalities = useRef(false);
 
   // Keep local state in sync when navigating between searches on the results page
   useEffect(() => {
@@ -41,16 +88,43 @@ export default function SearchForm({
     setAffiliation(initialAffiliation);
   }, [initialLocation, initialAffiliation]);
 
-  // Fetch municipalities for autocomplete
+  // Fetch municipalities for autocomplete with session-level caching to avoid refetches across navigations
   useEffect(() => {
+    const cachedMunicipalities = readCachedMunicipalities();
+    if (cachedMunicipalities) {
+      setMunicipalities(cachedMunicipalities);
+      return;
+    }
+
+    if (hasRequestedMunicipalities.current) return;
+    hasRequestedMunicipalities.current = true;
+
+    let isActive = true;
+
     fetch("/api/municipalities")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          setMunicipalities(data.municipalities);
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error(`Request failed with status ${res.status}`);
         }
+
+        const data: MunicipalitiesResponse = await res.json();
+        return data;
       })
-      .catch(console.error);
+      .then((data) => {
+        if (!isActive || !data?.success) return;
+
+        setMunicipalities(data.municipalities);
+        storeMunicipalities(data.municipalities);
+      })
+      .catch((error) => {
+        if (isActive) {
+          console.error("Municipality fetch error:", error);
+        }
+      });
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   // Filter suggestions as user types
