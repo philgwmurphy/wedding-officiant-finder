@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"; // Add this
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://onweddingofficiants.ca";
 
 export const metadata: Metadata = {
   title: "Find a Wedding Officiant in Ontario | Ontario Officiant Finder",
@@ -22,6 +23,9 @@ export const metadata: Metadata = {
     description:
       "Search 22,000+ registered wedding officiants across Ontario. Find the perfect match for your ceremony.",
     type: "website",
+  },
+  alternates: {
+    canonical: SITE_URL,
   },
 };
 
