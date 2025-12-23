@@ -3,6 +3,8 @@ import { searchOfficiants } from "@/lib/supabase";
 import { geocodeMunicipality, geocodePostalCode } from "@/lib/geocode";
 import type { SearchParams } from "@/types/officiant";
 
+const POSTAL_CODE_REGEX = /^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/i;
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -27,8 +29,7 @@ export async function GET(request: NextRequest) {
     params.location = rawLocation;
 
     if (rawLocation) {
-      const postalCodePattern = /^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/i;
-      if (postalCodePattern.test(rawLocation)) {
+      if (POSTAL_CODE_REGEX.test(rawLocation)) {
         const geocodedPostal = await geocodePostalCode(rawLocation);
         if (geocodedPostal) {
           params.lat = geocodedPostal.lat;

@@ -94,7 +94,7 @@ export default function SearchForm({
             onChange={(e) => setLocation(e.target.value)}
             onFocus={() => setShowSuggestions(true)}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-            placeholder="City, town, or postal code (with or without space)..."
+            placeholder="City, town, or Canadian postal code (spaces optional)"
             className="input-field text-sm py-2"
           />
           {showSuggestions && filteredSuggestions.length > 0 && (
@@ -128,7 +128,7 @@ export default function SearchForm({
               htmlFor="location"
               className="block text-sm font-medium text-gray-700 mb-1.5"
             >
-              Where is your wedding? (city or postal code)
+              Where is your wedding? (city or Canadian postal code, spaces optional)
             </label>
             <div className="relative">
               <svg
@@ -158,7 +158,7 @@ export default function SearchForm({
                 onChange={(e) => setLocation(e.target.value)}
                 onFocus={() => setShowSuggestions(true)}
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                placeholder="Enter city, town, or postal code in Ontario (spaces optional)"
+                placeholder="Enter city, town, or Canadian postal code (with or without space)"
                 className="input-field pl-10"
               />
             </div>
