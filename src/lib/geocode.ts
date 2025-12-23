@@ -8,13 +8,14 @@ const geocodeCache = new Map<string, GeocodedMunicipality | null>();
 const normalizeCacheKey = (value: string): string => value.toLowerCase().trim();
 
 const normalizePostalCode = (postalCode: string): string => {
-  const compact = postalCode.replace(/\s+/g, "").toUpperCase();
+  const trimmed = postalCode.trim();
+  const compact = trimmed.replace(/\s+/g, "").toUpperCase();
 
   if (/^[A-Z]\d[A-Z]\d[A-Z]\d$/.test(compact)) {
     return `${compact.slice(0, 3)} ${compact.slice(3)}`;
   }
 
-  return postalCode.trim();
+  return trimmed.toUpperCase();
 };
 
 /**
@@ -76,6 +77,9 @@ export async function geocodeMunicipality(
   }
 }
 
+/**
+ * Geocode a Canadian postal code to lat/lng using Nominatim
+ */
 export async function geocodePostalCode(
   postalCode: string
 ): Promise<GeocodedMunicipality | null> {
