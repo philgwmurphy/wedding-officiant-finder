@@ -130,7 +130,6 @@ CREATE TRIGGER update_officiants_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
--- RPC to perform server-side search with distance filtering and sorting
 CREATE OR REPLACE FUNCTION public.search_officiants_rpc(
   p_query text DEFAULT NULL,
   p_affiliation text DEFAULT NULL,
@@ -154,7 +153,13 @@ RETURNS TABLE (
 LANGUAGE sql
 STABLE
 AS $$
-WITH filtered AS (
+WITH inputs AS (
+  SELECT
+    NULLIF(trim(p_query), '') AS query_term,
+    NULLIF(trim(p_affiliation), '') AS affiliation_term,
+    NULLIF(trim(p_municipality), '') AS municipality_term
+),
+filtered AS (
   SELECT
     o.id,
     o.first_name,
@@ -169,13 +174,13 @@ WITH filtered AS (
       ELSE NULL
     END AS distance_km
   FROM officiants o
-  WHERE (p_affiliation IS NULL OR o.affiliation ILIKE '%' || p_affiliation || '%')
-    AND (p_municipality IS NULL OR o.municipality ILIKE '%' || p_municipality || '%')
+  CROSS JOIN inputs i
+  WHERE (i.affiliation_term IS NULL OR lower(o.affiliation) ILIKE '%' || lower(i.affiliation_term) || '%')
+    AND (i.municipality_term IS NULL OR lower(o.municipality) ILIKE '%' || lower(i.municipality_term) || '%')
     AND (
-      p_query IS NULL OR
-      o.first_name ILIKE '%' || p_query || '%' OR
-      o.last_name ILIKE '%' || p_query || '%' OR
-      o.municipality ILIKE '%' || p_query || '%'
+      i.query_term IS NULL OR
+      lower(o.first_name || ' ' || o.last_name) ILIKE '%' || lower(i.query_term) || '%'
+      OR lower(o.municipality) ILIKE '%' || lower(i.query_term) || '%'
     )
 ), radius_filtered AS (
   SELECT *
