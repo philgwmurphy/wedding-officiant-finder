@@ -7,6 +7,9 @@ import JsonLd from "@/components/JsonLd";
 import { generateBreadcrumbSchema } from "@/lib/schema";
 import type { OfficiantSearchResult } from "@/types/officiant";
 
+// Force dynamic rendering - this page fetches data based on search params
+export const dynamic = "force-dynamic";
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://onweddingofficiants.ca";
 
 interface SearchPageProps {
