@@ -7,51 +7,172 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm run dev      # Start development server at localhost:3000
 npm run build    # Production build
+npm run start    # Start production server
 npm run lint     # ESLint check
 npm run sync     # Sync officiants from Ontario Data Catalogue to Supabase
 ```
 
+## Project Structure
+
+```
+wedding-officiant-finder/
+├── src/
+│   ├── app/                    # Next.js App Router pages
+│   │   ├── api/                # API routes
+│   │   │   ├── search/         # Officiant search endpoint
+│   │   │   ├── generate-email/ # AI email generation
+│   │   │   ├── claim/          # Profile claim submission + verification
+│   │   │   ├── admin/claims/   # Admin claim management
+│   │   │   ├── affiliations/   # Unique affiliations list
+│   │   │   ├── municipalities/ # Municipality autocomplete list
+│   │   │   └── officiants/[id]/ # Single officiant lookup
+│   │   ├── admin/claims/       # Admin dashboard page
+│   │   ├── officiant/[id]/     # Individual officiant profile page
+│   │   ├── search/             # Search results page
+│   │   ├── layout.tsx          # Root layout with Vercel Analytics
+│   │   ├── page.tsx            # Homepage with search form
+│   │   ├── sitemap.ts          # Dynamic sitemap generation
+│   │   └── robots.ts           # Robots.txt configuration
+│   ├── components/             # React components
+│   │   ├── SearchForm.tsx      # Location/affiliation search with autocomplete
+│   │   ├── OfficiantCard.tsx   # Officiant result card
+│   │   ├── EmailGenerator.tsx  # AI-powered email composer
+│   │   ├── ClaimProfile.tsx    # Profile claim modal trigger
+│   │   ├── ClaimProfileForm.tsx # Claim submission form
+│   │   ├── ClaimVerifyForm.tsx # Verification code form
+│   │   └── JsonLd.tsx          # Structured data component
+│   ├── lib/                    # Shared utilities
+│   │   ├── supabase.ts         # Database client and queries
+│   │   ├── ontario-api.ts      # Ontario Data Catalogue client
+│   │   ├── geocode.ts          # Nominatim geocoding + distance calc
+│   │   ├── email.ts            # Resend email sending
+│   │   └── schema.ts           # JSON-LD structured data generators
+│   └── types/
+│       └── officiant.ts        # TypeScript type definitions
+├── scripts/
+│   └── sync-officiants.ts      # Data sync script (run with npm run sync)
+├── supabase/
+│   ├── schema.sql              # Full database schema
+│   └── migrations/             # Incremental migrations
+└── package.json
+```
+
 ## Architecture Overview
 
-This is a Next.js 14 App Router application for finding wedding officiants in Ontario. It uses Supabase for the database, Anthropic Claude for AI-powered email generation, and Resend for transactional emails.
+This is a Next.js 14 App Router application for finding wedding officiants in Ontario. It uses:
+
+- **Supabase** - PostgreSQL database with Row Level Security
+- **Anthropic Claude** - AI-powered email generation (claude-sonnet-4-20250514)
+- **Resend** - Transactional emails for verification
+- **Nominatim (OpenStreetMap)** - Geocoding for municipalities and postal codes
+- **Vercel Analytics & Speed Insights** - Performance monitoring
 
 ### Data Flow
 
-1. **Data Source**: Officiants are synced from the Ontario Data Catalogue API (`scripts/sync-officiants.ts`) into Supabase
-2. **Geocoding**: Municipalities are geocoded via Nominatim (OpenStreetMap) during sync for distance-based search
-3. **Search**: Users search by location/affiliation → `/api/search` queries Supabase with optional radius filtering
-4. **Email Generation**: `/api/generate-email` uses Anthropic Claude to create personalized inquiry emails
+1. **Data Source**: Officiants are synced from Ontario Data Catalogue API (`scripts/sync-officiants.ts`) into Supabase
+2. **Geocoding**: Municipalities are geocoded via Nominatim during sync, cached in `municipalities` table
+3. **Search**: Users search by location/affiliation → `/api/search` queries Supabase with distance calculations
+4. **Email Generation**: `/api/generate-email` uses Claude to create personalized inquiry emails
 
 ### Key Modules
 
-- `src/lib/supabase.ts` - Database queries (search, officiant lookup, affiliations/municipalities with caching)
-- `src/lib/ontario-api.ts` - Ontario Data Catalogue API client for fetching officiant registry
-- `src/lib/geocode.ts` - Nominatim geocoding and distance calculations
-- `src/lib/email.ts` - Resend email sending (lazy-initialized for build compatibility)
-- `src/lib/schema.ts` - JSON-LD structured data generators for SEO/AEO
+| Module | Purpose |
+|--------|---------|
+| `src/lib/supabase.ts` | Database queries: search, officiant lookup, affiliations/municipalities with caching fallbacks |
+| `src/lib/ontario-api.ts` | Ontario Data Catalogue API client for fetching officiant registry |
+| `src/lib/geocode.ts` | Nominatim geocoding (municipalities + postal codes) and Haversine distance calculations |
+| `src/lib/email.ts` | Resend email sending with lazy initialization for build compatibility |
+| `src/lib/schema.ts` | JSON-LD generators for SEO (WebSite, Person, LocalBusiness, BreadcrumbList, FAQ) |
+
+### API Routes
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/api/search` | GET | Search officiants by location, affiliation, radius |
+| `/api/generate-email` | POST | Generate personalized inquiry email using Claude |
+| `/api/claim` | POST | Submit profile claim request |
+| `/api/claim/verify` | POST | Verify 6-digit email code |
+| `/api/admin/claims` | GET/PATCH | Admin: list and approve/reject claims |
+| `/api/affiliations` | GET | Get unique affiliation list (cached) |
+| `/api/municipalities` | GET | Get municipality list for autocomplete (cached) |
+| `/api/officiants/[id]` | GET | Get single officiant by ID |
 
 ### Profile Claiming System
 
-Officiants can claim their profile to add contact info:
-1. Submit claim (`/api/claim`) → sends 6-digit verification code via Resend
-2. Verify code (`/api/claim/verify`) → marks claim as `email_verified`
-3. Admin approves (`/api/admin/claims`) → claim status becomes `approved`, contact info displays publicly
+Officiants can claim their profile to add contact info (email, phone, website):
+
+1. **Submit claim** (`/api/claim`) → generates 6-digit code, sends verification email via Resend
+2. **Verify code** (`/api/claim/verify`) → marks claim as `email_verified`
+3. **Admin approves** (`/api/admin/claims`) → claim status becomes `approved`, contact info displays publicly
 
 Admin dashboard at `/admin/claims` uses simple password auth via `ADMIN_PASSWORD` env var.
 
-### Environment Variables
+### Database Schema
+
+Main tables in Supabase:
+
+- **`officiants`** - Ontario-registered officiants with geocoded locations
+- **`municipalities`** - Cached geocoding results for municipalities
+- **`profile_claims`** - Profile claim requests with verification status
+- **`sync_log`** - Data sync operation history
+- **`cached_affiliations`** / **`cached_municipalities`** - Cached distinct values for faster API responses
+
+### Caching Strategy
+
+- **Server-side**: Municipalities/affiliations cached in dedicated tables, with fallback to live queries
+- **Client-side**: SearchForm caches municipalities in sessionStorage (1-hour TTL)
+- **Geocoding**: In-memory cache during sync operations; persistent cache in `municipalities` table
+
+## Environment Variables
 
 Required in `.env.local`:
-- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase connection
-- `SUPABASE_SERVICE_ROLE_KEY` - For write operations (sync, claims)
-- `ANTHROPIC_API_KEY` - AI email generation
-- `RESEND_API_KEY` - Verification emails
-- `ADMIN_PASSWORD` - Admin dashboard access
-- `NEXT_PUBLIC_SITE_URL` / `NEXT_PUBLIC_BASE_URL` - Full URL with protocol (e.g., `https://example.com`)
 
-## Code Conventions (from AGENTS.md)
+```bash
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=xxx
+SUPABASE_SERVICE_ROLE_KEY=xxx    # For write operations (sync, claims)
 
-- Use App Router patterns; add `"use client"` only when interactivity required
+# Anthropic
+ANTHROPIC_API_KEY=xxx            # AI email generation
+
+# Resend
+RESEND_API_KEY=xxx               # Verification emails
+
+# Admin
+ADMIN_PASSWORD=xxx               # Admin dashboard access
+
+# Site URLs
+NEXT_PUBLIC_SITE_URL=https://onweddingofficiants.ca
+NEXT_PUBLIC_BASE_URL=https://onweddingofficiants.ca
+```
+
+## Code Conventions
+
+### Next.js Patterns
+- Use App Router patterns; add `"use client"` only when interactivity is required
 - Prefer server-side data fetching; avoid `fetch` in Client Components
-- Use `type` aliases for props/data models; avoid `any`
+- Use `next/link` for internal navigation, `next/image` for images
 - Keep metadata in `metadata` exports, not manual `<Head>` manipulation
+- Co-locate route-specific logic inside route folders; shared UI goes in `src/components`
+
+### TypeScript
+- Use `type` aliases for props/data models; avoid `any`
+- Add explicit return types for exported functions and components
+- Enable strict null checks: narrow `undefined`/`null` before use
+- Favor immutable patterns using `const` and non-mutating array helpers
+
+### Component Patterns
+- Server Components by default for data fetching
+- Client Components only for interactive forms, autocomplete, modals
+- Use Suspense with skeleton loading states for async content
+
+### SEO/Structured Data
+- Generate JSON-LD structured data using helpers in `src/lib/schema.ts`
+- Include BreadcrumbList on all pages
+- Add FAQ schema on homepage, LocalBusiness schema on claimed profiles
+
+### Testing & Quality
+- Run `npm run lint` before committing
+- Keep imports ordered: built-ins, external deps, then internal modules
+- Remove unused imports
