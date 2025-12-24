@@ -1,4 +1,5 @@
 import type { GeocodedMunicipality } from "@/types/officiant";
+import { getFSACoordinates } from "./fsa-coordinates";
 
 const NOMINATIM_BASE = "https://nominatim.openstreetmap.org/search";
 
@@ -78,8 +79,14 @@ export async function geocodeMunicipality(
 }
 
 /**
- * Geocode a Canadian postal code to lat/lng using Nominatim
- * Uses free-form query with Ontario context for better results
+ * Geocode a Canadian postal code to lat/lng
+ * Uses static FSA (Forward Sortation Area) lookup for Ontario postal codes,
+ * which is more reliable than Nominatim for Canadian postal codes.
+ *
+ * Canadian postal codes aren't open data and aren't well-tagged in OpenStreetMap,
+ * making external geocoding services unreliable.
+ *
+ * @see https://github.com/osm-search/Nominatim/issues/1452
  */
 export async function geocodePostalCode(
   postalCode: string
@@ -91,8 +98,20 @@ export async function geocodePostalCode(
     return geocodeCache.get(cacheKey) || null;
   }
 
-  // Use free-form query with Ontario context for better Canadian postal code results
-  const searchQuery = `${normalizedPostalCode}, Ontario, Canada`;
+  // Try FSA lookup first (works for all Ontario postal codes)
+  const fsaCoords = getFSACoordinates(normalizedPostalCode);
+  if (fsaCoords) {
+    const result: GeocodedMunicipality = {
+      name: normalizedPostalCode,
+      lat: fsaCoords.lat,
+      lng: fsaCoords.lng,
+    };
+    geocodeCache.set(cacheKey, result);
+    return result;
+  }
+
+  // Fall back to Nominatim for non-Ontario postal codes
+  const searchQuery = `${normalizedPostalCode}, Canada`;
 
   const url = new URL(NOMINATIM_BASE);
   url.searchParams.set("q", searchQuery);
