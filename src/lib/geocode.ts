@@ -79,6 +79,7 @@ export async function geocodeMunicipality(
 
 /**
  * Geocode a Canadian postal code to lat/lng using Nominatim
+ * Uses free-form query with Ontario context for better results
  */
 export async function geocodePostalCode(
   postalCode: string
@@ -90,11 +91,14 @@ export async function geocodePostalCode(
     return geocodeCache.get(cacheKey) || null;
   }
 
+  // Use free-form query with Ontario context for better Canadian postal code results
+  const searchQuery = `${normalizedPostalCode}, Ontario, Canada`;
+
   const url = new URL(NOMINATIM_BASE);
-  url.searchParams.set("postalcode", normalizedPostalCode);
-  url.searchParams.set("countrycodes", "ca");
+  url.searchParams.set("q", searchQuery);
   url.searchParams.set("format", "json");
   url.searchParams.set("limit", "1");
+  url.searchParams.set("countrycodes", "ca");
 
   try {
     const response = await fetch(url.toString(), {
