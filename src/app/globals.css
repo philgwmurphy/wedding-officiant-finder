@@ -54,7 +54,9 @@ html {
   }
 
   .input-field {
-    @apply w-full px-4 py-3 rounded-lg border border-[var(--border)] focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--accent)]/30 transition-all duration-200 bg-[var(--background-card)] text-[var(--foreground)];
+    @apply w-full px-4 py-3 rounded-lg border border-[var(--border)] focus:border-[var(--primary)] focus:ring-2 transition-all duration-200 bg-[var(--background-card)] text-[var(--foreground)];
+    --tw-ring-color: var(--accent);
+    --tw-ring-opacity: 0.3;
   }
 
   .card {
