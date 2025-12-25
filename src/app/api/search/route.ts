@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { searchOfficiants } from "@/lib/supabase";
 import { geocodeMunicipality, geocodePostalCode } from "@/lib/geocode";
-import type { SearchParams } from "@/types/officiant";
+import { getActiveFeaturedOfficiants } from "@/lib/monetization-db";
+import type { SearchParams, OfficiantSearchResult } from "@/types/officiant";
 
 const POSTAL_CODE_REGEX = /^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/i;
 
@@ -55,11 +56,39 @@ export async function GET(request: NextRequest) {
 
     const { results, total } = await searchOfficiants(params);
 
+    // Get featured officiant IDs for this search context
+    const featuredIds = await getActiveFeaturedOfficiants({
+      municipality: params.location,
+      affiliation: params.affiliation,
+      slotType: 'search_top',
+    });
+
+    // Mark featured officiants and sort them to the top (only on first page)
+    let finalResults: OfficiantSearchResult[] = results;
+
+    if (params.offset === 0 && featuredIds.length > 0) {
+      // Separate featured from regular results
+      const featuredResults: OfficiantSearchResult[] = [];
+      const regularResults: OfficiantSearchResult[] = [];
+
+      for (const result of results) {
+        if (featuredIds.includes(result.id)) {
+          featuredResults.push({ ...result, isFeatured: true });
+        } else {
+          regularResults.push(result);
+        }
+      }
+
+      // Featured first, then regular results
+      finalResults = [...featuredResults, ...regularResults];
+    }
+
     return NextResponse.json({
       success: true,
-      results,
-      count: results.length,
+      results: finalResults,
+      count: finalResults.length,
       total,
+      featuredCount: params.offset === 0 ? featuredIds.filter(id => results.some(r => r.id === id)).length : 0,
       params: {
         location: params.location,
         lat: params.lat,

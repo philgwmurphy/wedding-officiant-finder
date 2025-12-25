@@ -72,6 +72,7 @@ export interface SearchParams {
 // Search result with distance
 export interface OfficiantSearchResult extends Officiant {
   distance?: number; // in km
+  isFeatured?: boolean; // true if officiant has featured subscription
 }
 
 // API response from Ontario Data Catalogue
