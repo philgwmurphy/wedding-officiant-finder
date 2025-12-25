@@ -1,3 +1,4 @@
+import Link from "next/link";
 import SearchForm from "@/components/SearchForm";
 import JsonLd from "@/components/JsonLd";
 import {
@@ -6,6 +7,7 @@ import {
   generateFAQSchema,
   HOMEPAGE_FAQS,
 } from "@/lib/schema";
+import { CITY_LANDING_PAGES, AFFILIATION_LANDING_PAGES } from "@/lib/landing-pages";
 
 export default function Home() {
   const schemas = [
@@ -150,16 +152,16 @@ export default function Home() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                   />
                 </svg>
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">
-                Generate Your Inquiry
+                View Officiant Profiles
               </h3>
               <p className="text-gray-600 text-sm">
-                Use our AI to craft a personalized inquiry email that gets
-                responses.
+                Browse detailed profiles and find the perfect match for your
+                ceremony style.
               </p>
             </div>
           </div>
@@ -182,6 +184,45 @@ export default function Home() {
                   <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Popular Searches Section */}
+        <section className="py-12 px-4 bg-white border-t border-gray-100">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">
+              Popular Searches
+            </h2>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <h3 className="font-semibold text-gray-700 mb-3">By City</h3>
+                <div className="flex flex-wrap gap-2">
+                  {CITY_LANDING_PAGES.slice(0, 12).map((city) => (
+                    <Link
+                      key={city.slug}
+                      href={`/${city.slug}`}
+                      className="text-sm text-violet-600 hover:text-violet-800 hover:underline"
+                    >
+                      {city.city}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-700 mb-3">By Ceremony Type</h3>
+                <div className="flex flex-wrap gap-2">
+                  {AFFILIATION_LANDING_PAGES.slice(0, 10).map((aff) => (
+                    <Link
+                      key={aff.slug}
+                      href={`/affiliation/${aff.slug}`}
+                      className="text-sm text-violet-600 hover:text-violet-800 hover:underline"
+                    >
+                      {aff.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>

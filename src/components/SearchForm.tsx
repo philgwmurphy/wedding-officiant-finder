@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import AffiliationChips from "./AffiliationChips";
 
 interface SearchFormProps {
   initialLocation?: string;
@@ -385,6 +386,11 @@ export default function SearchForm({
                 className="input-field pl-10"
               />
             </div>
+            <AffiliationChips
+              selected={affiliation}
+              onSelect={setAffiliation}
+              className="mt-3"
+            />
           </div>
         </div>
 
