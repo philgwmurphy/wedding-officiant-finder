@@ -100,7 +100,7 @@ export default function SearchForm({
         const params = new URLSearchParams();
         params.set("lat", latitude.toFixed(6));
         params.set("lng", longitude.toFixed(6));
-        params.set("radius", "25");
+        params.set("radius", "50");
         if (affiliation) params.set("affiliation", affiliation);
         router.push(`/search?${params.toString()}`);
         setGettingLocation(false);
