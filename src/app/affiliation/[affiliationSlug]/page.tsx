@@ -139,7 +139,7 @@ export default function AffiliationLandingPage({ params }: AffiliationPageProps)
         <header className="bg-white border-b border-gray-200">
           <div className="max-w-6xl mx-auto px-4 py-4">
             <div className="flex items-center justify-between gap-4">
-              <Link href="/" className="text-xl font-bold text-violet-600 shrink-0">
+              <Link href="/" className="text-xl font-bold text-[#7D9A82] shrink-0">
                 Officiant Finder
               </Link>
               <SearchForm initialAffiliation={affiliation.affiliation} compact />
@@ -216,7 +216,7 @@ export default function AffiliationLandingPage({ params }: AffiliationPageProps)
                 href="https://data.ontario.ca/dataset/registered-marriage-officiants"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-violet-600 hover:underline"
+                className="text-[#7D9A82] hover:underline"
               >
                 Ontario Data Catalogue
               </a>

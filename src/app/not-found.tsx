@@ -4,9 +4,9 @@ export default function NotFound() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="text-center">
-        <div className="w-20 h-20 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="w-20 h-20 bg-[#E8F0E9] rounded-full flex items-center justify-center mx-auto mb-6">
           <svg
-            className="w-10 h-10 text-violet-600"
+            className="w-10 h-10 text-[#7D9A82]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
