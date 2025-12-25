@@ -114,12 +114,19 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
     status = 'trialing';
   }
 
+  // Access period timestamps from the subscription object
+  const subData = subscription as unknown as {
+    current_period_start: number;
+    current_period_end: number;
+    cancel_at_period_end: boolean;
+  };
+
   await updateSubscriptionByStripeId(subscription.id, {
     plan,
     status,
-    current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-    current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-    cancel_at_period_end: subscription.cancel_at_period_end,
+    current_period_start: new Date(subData.current_period_start * 1000).toISOString(),
+    current_period_end: new Date(subData.current_period_end * 1000).toISOString(),
+    cancel_at_period_end: subData.cancel_at_period_end,
   });
 
   console.log(`Subscription updated: ${subscription.id} -> ${plan} (${status})`);
@@ -135,7 +142,9 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
 }
 
 async function handlePaymentFailed(invoice: Stripe.Invoice) {
-  const subscriptionId = invoice.subscription as string;
+  // Access subscription from invoice object
+  const invoiceData = invoice as unknown as { subscription?: string | null };
+  const subscriptionId = invoiceData.subscription;
 
   if (subscriptionId) {
     await updateSubscriptionByStripeId(subscriptionId, {

@@ -134,3 +134,38 @@ export async function sendClaimApprovedEmail(
 export function generateVerificationCode(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
+
+/**
+ * Generic email sending function
+ */
+export async function sendEmail({
+  to,
+  subject,
+  html,
+}: {
+  to: string;
+  subject: string;
+  html: string;
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { error } = await getResend().emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject,
+      html,
+    });
+
+    if (error) {
+      console.error("Email send error:", error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error("Email error:", err);
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Failed to send email",
+    };
+  }
+}
