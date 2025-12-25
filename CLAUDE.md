@@ -20,7 +20,6 @@ wedding-officiant-finder/
 │   ├── app/                    # Next.js App Router pages
 │   │   ├── api/                # API routes
 │   │   │   ├── search/         # Officiant search endpoint
-│   │   │   ├── generate-email/ # AI email generation
 │   │   │   ├── claim/          # Profile claim submission + verification
 │   │   │   ├── admin/claims/   # Admin claim management
 │   │   │   ├── affiliations/   # Unique affiliations list
@@ -36,7 +35,6 @@ wedding-officiant-finder/
 │   ├── components/             # React components
 │   │   ├── SearchForm.tsx      # Location/affiliation search with autocomplete
 │   │   ├── OfficiantCard.tsx   # Officiant result card
-│   │   ├── EmailGenerator.tsx  # AI-powered email composer
 │   │   ├── ClaimProfile.tsx    # Profile claim modal trigger
 │   │   ├── ClaimProfileForm.tsx # Claim submission form
 │   │   ├── ClaimVerifyForm.tsx # Verification code form
@@ -44,7 +42,8 @@ wedding-officiant-finder/
 │   ├── lib/                    # Shared utilities
 │   │   ├── supabase.ts         # Database client and queries
 │   │   ├── ontario-api.ts      # Ontario Data Catalogue client
-│   │   ├── geocode.ts          # Nominatim geocoding + distance calc
+│   │   ├── geocode.ts          # Geocoding + distance calculations
+│   │   ├── fsa-coordinates.ts  # Ontario FSA postal code lookup table
 │   │   ├── email.ts            # Resend email sending
 │   │   └── schema.ts           # JSON-LD structured data generators
 │   └── types/
@@ -62,17 +61,17 @@ wedding-officiant-finder/
 This is a Next.js 14 App Router application for finding wedding officiants in Ontario. It uses:
 
 - **Supabase** - PostgreSQL database with Row Level Security
-- **Anthropic Claude** - AI-powered email generation (claude-sonnet-4-20250514)
-- **Resend** - Transactional emails for verification
-- **Nominatim (OpenStreetMap)** - Geocoding for municipalities and postal codes
+- **Resend** - Transactional emails for profile claim verification
+- **FSA Lookup** - Static Ontario postal code geocoding (no external API needed)
+- **Nominatim (OpenStreetMap)** - Geocoding for municipalities
 - **Vercel Analytics & Speed Insights** - Performance monitoring
 
 ### Data Flow
 
 1. **Data Source**: Officiants are synced from Ontario Data Catalogue API (`scripts/sync-officiants.ts`) into Supabase
 2. **Geocoding**: Municipalities are geocoded via Nominatim during sync, cached in `municipalities` table
-3. **Search**: Users search by location/affiliation → `/api/search` queries Supabase with distance calculations
-4. **Email Generation**: `/api/generate-email` uses Claude to create personalized inquiry emails
+3. **Postal Codes**: Ontario postal codes use FSA lookup table for reliable geocoding (Canadian postal codes aren't in OSM)
+4. **Search**: Users search by location/affiliation → `/api/search` queries Supabase with distance calculations
 
 ### Key Modules
 
@@ -80,8 +79,9 @@ This is a Next.js 14 App Router application for finding wedding officiants in On
 |--------|---------|
 | `src/lib/supabase.ts` | Database queries: search, officiant lookup, affiliations/municipalities with caching fallbacks |
 | `src/lib/ontario-api.ts` | Ontario Data Catalogue API client for fetching officiant registry |
-| `src/lib/geocode.ts` | Nominatim geocoding (municipalities + postal codes) and Haversine distance calculations |
-| `src/lib/email.ts` | Resend email sending with lazy initialization for build compatibility |
+| `src/lib/geocode.ts` | Municipality geocoding (Nominatim) and Haversine distance calculations |
+| `src/lib/fsa-coordinates.ts` | Static FSA lookup table for Ontario postal code geocoding |
+| `src/lib/email.ts` | Resend email sending for profile claim verification |
 | `src/lib/schema.ts` | JSON-LD generators for SEO (WebSite, Person, LocalBusiness, BreadcrumbList, FAQ) |
 
 ### API Routes
@@ -89,7 +89,6 @@ This is a Next.js 14 App Router application for finding wedding officiants in On
 | Endpoint | Method | Purpose |
 |----------|--------|---------|
 | `/api/search` | GET | Search officiants by location, affiliation, radius |
-| `/api/generate-email` | POST | Generate personalized inquiry email using Claude |
 | `/api/claim` | POST | Submit profile claim request |
 | `/api/claim/verify` | POST | Verify 6-digit email code |
 | `/api/admin/claims` | GET/PATCH | Admin: list and approve/reject claims |
@@ -133,11 +132,8 @@ NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=xxx
 SUPABASE_SERVICE_ROLE_KEY=xxx    # For write operations (sync, claims)
 
-# Anthropic
-ANTHROPIC_API_KEY=xxx            # AI email generation
-
 # Resend
-RESEND_API_KEY=xxx               # Verification emails
+RESEND_API_KEY=xxx               # Verification emails for profile claims
 
 # Admin
 ADMIN_PASSWORD=xxx               # Admin dashboard access
