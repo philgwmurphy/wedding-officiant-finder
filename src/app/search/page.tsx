@@ -18,6 +18,8 @@ interface SearchPageProps {
     affiliation?: string;
     q?: string;
     radius?: string;
+    lat?: string;
+    lng?: string;
   };
 }
 
@@ -26,13 +28,20 @@ export async function generateMetadata({
 }: SearchPageProps): Promise<Metadata> {
   const location = searchParams.location;
   const affiliation = searchParams.affiliation;
+  const isGeoSearch = searchParams.lat && searchParams.lng;
   const searchQuery = buildSearchQuery(searchParams);
   const canonical = `${SITE_URL}/search${searchQuery ? `?${searchQuery}` : ""}`;
 
   let title = "Search Wedding Officiants";
   let description = "Search registered wedding officiants across Ontario, Canada.";
 
-  if (location && affiliation) {
+  if (isGeoSearch && affiliation) {
+    title = `${affiliation} Wedding Officiants Near You`;
+    description = `Find ${affiliation} wedding officiants near your location in Ontario. Browse registered officiants and contact them for your ceremony.`;
+  } else if (isGeoSearch) {
+    title = `Wedding Officiants Near You`;
+    description = `Find registered wedding officiants near your location in Ontario. Browse local officiants and contact them for your ceremony.`;
+  } else if (location && affiliation) {
     title = `${affiliation} Wedding Officiants near ${location}`;
     description = `Find ${affiliation} wedding officiants near ${location}, Ontario. Browse registered officiants and contact them for your ceremony.`;
   } else if (location) {
@@ -63,6 +72,8 @@ function buildSearchQuery(params: SearchPageProps["searchParams"]) {
   if (params.affiliation) searchParams.set("affiliation", params.affiliation);
   if (params.q) searchParams.set("q", params.q);
   if (params.radius) searchParams.set("radius", params.radius);
+  if (params.lat) searchParams.set("lat", params.lat);
+  if (params.lng) searchParams.set("lng", params.lng);
 
   return searchParams.toString();
 }
@@ -194,12 +205,20 @@ async function SearchResults({
       <JsonLd data={[breadcrumbs, itemListSchema]} />
       <p className="text-sm text-gray-500 mb-6">
         Found <span className="font-medium">{results.length}</span> officiants
-        {searchParams.location && (
+        {searchParams.lat && searchParams.lng ? (
+          <>
+            {" "}
+            <span className="font-medium">near your location</span>
+            {searchParams.radius && (
+              <> within {searchParams.radius} km</>
+            )}
+          </>
+        ) : searchParams.location ? (
           <>
             {" "}
             near <span className="font-medium">{searchParams.location}</span>
           </>
-        )}
+        ) : null}
         {searchParams.affiliation && (
           <>
             {" "}
@@ -251,7 +270,9 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
         <main className="max-w-6xl mx-auto px-4 py-8">
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-gray-900">
-              {searchParams.location
+              {searchParams.lat && searchParams.lng
+                ? "Officiants near your location"
+                : searchParams.location
                 ? `Officiants near ${searchParams.location}`
                 : "Search Results"}
             </h1>

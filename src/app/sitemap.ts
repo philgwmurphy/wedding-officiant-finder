@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { createClient } from "@supabase/supabase-js";
+import { CITY_LANDING_PAGES, AFFILIATION_LANDING_PAGES } from "@/lib/landing-pages";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://onweddingofficiants.ca";
 
@@ -48,5 +49,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...officiantPages];
+  const cityPages: MetadataRoute.Sitemap = CITY_LANDING_PAGES.map((city) => ({
+    url: `${SITE_URL}/${city.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+  const affiliationPages: MetadataRoute.Sitemap = AFFILIATION_LANDING_PAGES.map((aff) => ({
+    url: `${SITE_URL}/affiliation/${aff.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+  return [...staticPages, ...cityPages, ...affiliationPages, ...officiantPages];
 }
