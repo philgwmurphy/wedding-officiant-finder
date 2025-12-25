@@ -24,11 +24,20 @@ export async function GET(request: NextRequest) {
         : 0,
     };
 
-    // If location is provided, try to geocode it for radius search
+    // Check for direct lat/lng parameters (from geolocation)
+    const directLat = searchParams.get("lat");
+    const directLng = searchParams.get("lng");
+
+    if (directLat && directLng) {
+      params.lat = parseFloat(directLat);
+      params.lng = parseFloat(directLng);
+    }
+
+    // If location is provided and no direct coords, try to geocode it
     const rawLocation = params.location?.trim();
     params.location = rawLocation;
 
-    if (rawLocation) {
+    if (rawLocation && !params.lat && !params.lng) {
       if (POSTAL_CODE_REGEX.test(rawLocation)) {
         const geocodedPostal = await geocodePostalCode(rawLocation);
         if (geocodedPostal) {

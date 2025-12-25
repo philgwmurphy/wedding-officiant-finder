@@ -34,6 +34,8 @@ export interface DbOfficiant {
 export async function searchOfficiants(
   params: SearchParams
 ): Promise<OfficiantSearchResult[]> {
+  const isRadiusSearch = params.lat && params.lng && params.radius;
+
   let query = supabase
     .from("officiants")
     .select("*")
@@ -51,15 +53,18 @@ export async function searchOfficiants(
     );
   }
 
-  // Filter by municipality if location is a direct match
+  // Filter by municipality if location is a direct match (and not doing radius search)
   if (params.location && !params.lat) {
     query = query.ilike("municipality", `%${params.location}%`);
   }
 
-  // Pagination
-  const limit = params.limit || 50;
-  const offset = params.offset || 0;
-  query = query.range(offset, offset + limit - 1);
+  // For radius-based searches, we need to fetch all results first,
+  // then filter by distance. For non-radius searches, apply pagination.
+  if (!isRadiusSearch) {
+    const limit = params.limit || 50;
+    const offset = params.offset || 0;
+    query = query.range(offset, offset + limit - 1);
+  }
 
   const { data, error } = await query;
 
@@ -95,6 +100,13 @@ export async function searchOfficiants(
         return true;
       })
       .sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity));
+
+    // Apply pagination after distance filtering for radius searches
+    if (isRadiusSearch) {
+      const limit = params.limit || 50;
+      const offset = params.offset || 0;
+      results = results.slice(offset, offset + limit);
+    }
   }
 
   return results;
