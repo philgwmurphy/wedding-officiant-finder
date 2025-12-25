@@ -281,7 +281,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
             <div className="flex items-center justify-between gap-4">
               <Link
                 href="/"
-                className="text-xl font-bold text-violet-600 shrink-0"
+                className="text-xl font-bold text-[#7D9A82] shrink-0"
               >
                 Officiant Finder
               </Link>

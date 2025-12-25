@@ -115,7 +115,7 @@ export default function Pagination({
               href={createPageUrl(page)}
               className={`px-3 py-2 text-sm font-medium rounded-lg ${
                 page === currentPage
-                  ? "bg-violet-600 text-white"
+                  ? "bg-[#7D9A82] text-white"
                   : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
               }`}
             >

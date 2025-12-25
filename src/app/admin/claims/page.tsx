@@ -201,7 +201,7 @@ export default function AdminClaimsPage() {
               onClick={() => setStatusFilter(status)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 statusFilter === status
-                  ? "bg-violet-600 text-white"
+                  ? "bg-[#7D9A82] text-white"
                   : "bg-white text-gray-700 hover:bg-gray-100"
               }`}
             >
@@ -222,7 +222,7 @@ export default function AdminClaimsPage() {
 
         {loading ? (
           <div className="text-center py-12">
-            <div className="animate-spin w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full mx-auto"></div>
+            <div className="animate-spin w-8 h-8 border-4 border-[#7D9A82] border-t-transparent rounded-full mx-auto"></div>
             <p className="text-gray-500 mt-4">Loading claims...</p>
           </div>
         ) : claims.length === 0 ? (
@@ -257,7 +257,7 @@ export default function AdminClaimsPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
                       <div>
                         <span className="text-gray-500">Email:</span>{" "}
-                        <a href={`mailto:${claim.email}`} className="text-violet-600 hover:underline">
+                        <a href={`mailto:${claim.email}`} className="text-[#7D9A82] hover:underline">
                           {claim.email}
                         </a>
                       </div>
@@ -273,7 +273,7 @@ export default function AdminClaimsPage() {
                             href={claim.website}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-violet-600 hover:underline"
+                            className="text-[#7D9A82] hover:underline"
                           >
                             {claim.website.replace(/^https?:\/\//, "")}
                           </a>
@@ -310,7 +310,7 @@ export default function AdminClaimsPage() {
 
                   <Link
                     href={`/officiant/${claim.officiant_id}`}
-                    className="text-sm text-violet-600 hover:underline"
+                    className="text-sm text-[#7D9A82] hover:underline"
                   >
                     View Profile
                   </Link>

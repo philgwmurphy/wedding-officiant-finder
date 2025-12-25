@@ -36,7 +36,7 @@ export default function OfficiantCard({ officiant }: OfficiantCardProps) {
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">
               <div>
-                <h3 className="font-semibold text-gray-900 group-hover:text-violet-600 transition-colors">
+                <h3 className="font-semibold text-gray-900 group-hover:text-[#7D9A82] transition-colors">
                   {officiant.firstName} {officiant.lastName}
                 </h3>
                 <p className="text-sm text-gray-600 mt-0.5">
@@ -66,7 +66,7 @@ export default function OfficiantCard({ officiant }: OfficiantCardProps) {
         <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-sm">
           <span className="text-gray-500">View profile</span>
           <svg
-            className="w-4 h-4 text-gray-400 group-hover:text-violet-600 group-hover:translate-x-1 transition-all"
+            className="w-4 h-4 text-gray-400 group-hover:text-[#7D9A82] group-hover:translate-x-1 transition-all"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -160,9 +160,9 @@ function getAffiliationCategory(affiliation: string): {
 
   // Default
   return {
-    bgColor: "bg-violet-100",
-    textColor: "text-violet-700",
-    pillBg: "bg-violet-50",
-    pillText: "text-violet-700",
+    bgColor: "bg-[#E8F0E9]",
+    textColor: "text-[#5E7D63]",
+    pillBg: "bg-[#E8F0E9]",
+    pillText: "text-[#5E7D63]",
   };
 }

@@ -61,9 +61,9 @@ export default function ClaimProfile({
       {step === "button" && (
         <button
           onClick={() => setStep("form")}
-          className="w-full border-2 border-dashed border-violet-300 rounded-lg p-4 text-center hover:border-violet-500 hover:bg-violet-50 transition-colors group"
+          className="w-full border-2 border-dashed border-[#B8CCBB] rounded-lg p-4 text-center hover:border-[#7D9A82] hover:bg-[#E8F0E9] transition-colors group"
         >
-          <div className="flex items-center justify-center gap-2 text-violet-600 font-medium group-hover:text-violet-700">
+          <div className="flex items-center justify-center gap-2 text-[#7D9A82] font-medium group-hover:text-[#5E7D63]">
             <svg
               className="w-5 h-5"
               fill="none"

@@ -24,7 +24,7 @@ export default function Home() {
         <div className="text-center max-w-3xl mx-auto mb-10">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 text-balance">
             Find your perfect
-            <span className="text-violet-600"> wedding officiant</span>
+            <span className="text-[#7D9A82]"> wedding officiant</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto text-balance">
             Search over 22,000 registered officiants across Ontario. Find
@@ -91,9 +91,9 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-[#E8F0E9] rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg
-                  className="w-6 h-6 text-violet-600"
+                  className="w-6 h-6 text-[#7D9A82]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -116,9 +116,9 @@ export default function Home() {
             </div>
 
             <div className="text-center">
-              <div className="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-[#E8F0E9] rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg
-                  className="w-6 h-6 text-violet-600"
+                  className="w-6 h-6 text-[#7D9A82]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -141,9 +141,9 @@ export default function Home() {
             </div>
 
             <div className="text-center">
-              <div className="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-[#E8F0E9] rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg
-                  className="w-6 h-6 text-violet-600"
+                  className="w-6 h-6 text-[#7D9A82]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -202,7 +202,7 @@ export default function Home() {
                     <Link
                       key={city.slug}
                       href={`/${city.slug}`}
-                      className="text-sm text-violet-600 hover:text-violet-800 hover:underline"
+                      className="text-sm text-[#7D9A82] hover:text-[#5E7D63] hover:underline"
                     >
                       {city.city}
                     </Link>
@@ -216,7 +216,7 @@ export default function Home() {
                     <Link
                       key={aff.slug}
                       href={`/affiliation/${aff.slug}`}
-                      className="text-sm text-violet-600 hover:text-violet-800 hover:underline"
+                      className="text-sm text-[#7D9A82] hover:text-[#5E7D63] hover:underline"
                     >
                       {aff.label}
                     </Link>
@@ -236,7 +236,7 @@ export default function Home() {
                 href="https://data.ontario.ca/dataset/registered-marriage-officiants"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-violet-600 hover:underline"
+                className="text-[#7D9A82] hover:underline"
               >
                 Ontario Data Catalogue
               </a>

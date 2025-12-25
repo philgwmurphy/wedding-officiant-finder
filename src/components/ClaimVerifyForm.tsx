@@ -156,7 +156,7 @@ export default function ClaimVerifyForm({
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={handlePaste}
               disabled={isLoading}
-              className="w-12 h-14 text-center text-2xl font-bold border-2 border-gray-300 rounded-lg focus:border-violet-500 focus:ring-2 focus:ring-violet-200 transition-all disabled:opacity-50"
+              className="w-12 h-14 text-center text-2xl font-bold border-2 border-gray-300 rounded-lg focus:border-[#7D9A82] focus:ring-2 focus:ring-[#B8CCBB]/30 transition-all disabled:opacity-50"
             />
           ))}
         </div>
@@ -213,7 +213,7 @@ export default function ClaimVerifyForm({
 
         <p className="text-xs text-gray-500 text-center mt-4">
           Didn&apos;t receive the code? Check your spam folder or{" "}
-          <button onClick={onBack} className="text-violet-600 hover:underline">
+          <button onClick={onBack} className="text-[#7D9A82] hover:underline">
             try again
           </button>
         </p>

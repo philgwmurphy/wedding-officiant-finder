@@ -220,7 +220,7 @@ export default function SearchForm({
                 <li
                   key={suggestion}
                   onClick={() => selectSuggestion(suggestion)}
-                  className="px-4 py-2 hover:bg-violet-50 cursor-pointer text-sm"
+                  className="px-4 py-2 hover:bg-[#E8F0E9] cursor-pointer text-sm"
                 >
                   {suggestion}
                 </li>
@@ -271,7 +271,7 @@ export default function SearchForm({
                 type="button"
                 onClick={handleNearMe}
                 disabled={gettingLocation}
-                className="text-sm text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1 disabled:opacity-50"
+                className="text-sm text-[#7D9A82] hover:text-[#5E7D63] font-medium flex items-center gap-1 disabled:opacity-50"
               >
                 {gettingLocation ? (
                   <>
@@ -333,7 +333,7 @@ export default function SearchForm({
                   <li
                     key={suggestion}
                     onClick={() => selectSuggestion(suggestion)}
-                    className="px-4 py-3 hover:bg-violet-50 cursor-pointer flex items-center gap-2"
+                    className="px-4 py-3 hover:bg-[#E8F0E9] cursor-pointer flex items-center gap-2"
                   >
                     <svg
                       className="w-4 h-4 text-gray-400"

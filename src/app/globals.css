@@ -3,14 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --background: #fafafa;
-  --foreground: #1a1a1a;
-  --primary: #7c3aed;
-  --primary-dark: #6d28d9;
-  --secondary: #f3e8ff;
-  --accent: #c084fc;
-  --muted: #6b7280;
-  --border: #e5e7eb;
+  /* Sage & Ivory Palette */
+  --background: #FDFCF8;        /* Ivory */
+  --background-card: #FFFEF9;   /* Warm White */
+  --foreground: #3A4239;        /* Deep Green Gray */
+  --primary: #7D9A82;           /* Sage Green */
+  --primary-dark: #5E7D63;      /* Forest Sage */
+  --secondary: #E8F0E9;         /* Light Sage */
+  --accent: #B8CCBB;            /* Soft Sage */
+  --muted: #7A8578;             /* Olive Gray */
+  --border: #E3EAE4;            /* Pale Sage */
 }
 
 body {
@@ -31,19 +33,19 @@ html {
 
 @layer components {
   .btn-primary {
-    @apply bg-violet-600 hover:bg-violet-700 text-white font-medium py-2.5 px-5 rounded-lg transition-colors duration-200;
+    @apply bg-[#7D9A82] hover:bg-[#5E7D63] text-white font-medium py-2.5 px-5 rounded-lg transition-colors duration-200;
   }
 
   .btn-secondary {
-    @apply bg-white hover:bg-gray-50 text-gray-700 font-medium py-2.5 px-5 rounded-lg border border-gray-300 transition-colors duration-200;
+    @apply bg-[#FFFEF9] hover:bg-[#E8F0E9] text-[#3A4239] font-medium py-2.5 px-5 rounded-lg border border-[#E3EAE4] transition-colors duration-200;
   }
 
   .input-field {
-    @apply w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 transition-all duration-200;
+    @apply w-full px-4 py-3 rounded-lg border border-[#E3EAE4] focus:border-[#7D9A82] focus:ring-2 focus:ring-[#B8CCBB]/30 transition-all duration-200 bg-[#FFFEF9];
   }
 
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-100 p-6 transition-shadow hover:shadow-md;
+    @apply bg-[#FFFEF9] rounded-xl shadow-sm border border-[#E3EAE4] p-6 transition-shadow hover:shadow-md;
   }
 }
 
