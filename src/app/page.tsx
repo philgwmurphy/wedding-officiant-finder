@@ -1,6 +1,7 @@
 import Link from "next/link";
 import SearchForm from "@/components/SearchForm";
 import JsonLd from "@/components/JsonLd";
+import ThemeToggle from "@/components/ThemeToggle";
 import {
   generateWebsiteSchema,
   generateOrganizationSchema,
@@ -18,15 +19,20 @@ export default function Home() {
   return (
     <>
       <JsonLd data={schemas} />
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col bg-[var(--background)]">
+        {/* Header */}
+        <header className="absolute top-0 right-0 p-4">
+          <ThemeToggle />
+        </header>
+
         {/* Hero Section */}
         <main className="flex-1 flex flex-col items-center justify-center px-4 py-16 md:py-24">
         <div className="text-center max-w-3xl mx-auto mb-10">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 text-balance">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[var(--foreground)] mb-4 text-balance">
             Find your perfect
-            <span className="text-[#7D9A82]"> wedding officiant</span>
+            <span className="text-[var(--primary)]"> wedding officiant</span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto text-balance">
+          <p className="text-lg md:text-xl text-[var(--muted)] max-w-2xl mx-auto text-balance">
             Search over 22,000 registered officiants across Ontario. Find
             someone who matches your ceremony style and location.
           </p>
@@ -36,7 +42,7 @@ export default function Home() {
         <SearchForm />
 
         {/* Trust indicators */}
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500">
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-[var(--muted)]">
           <div className="flex items-center gap-2">
             <svg
               className="w-5 h-5 text-green-500"

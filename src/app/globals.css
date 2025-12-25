@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  /* Sage & Ivory Palette */
+  /* Sage & Ivory Palette - Light Mode */
   --background: #FDFCF8;        /* Ivory */
   --background-card: #FFFEF9;   /* Warm White */
   --foreground: #3A4239;        /* Deep Green Gray */
@@ -13,6 +13,19 @@
   --accent: #B8CCBB;            /* Soft Sage */
   --muted: #7A8578;             /* Olive Gray */
   --border: #E3EAE4;            /* Pale Sage */
+}
+
+.dark {
+  /* Dark Sage Palette - Dark Mode */
+  --background: #1A1F1B;        /* Dark Forest */
+  --background-card: #242A25;   /* Dark Card */
+  --foreground: #E8EDE9;        /* Light Sage Text */
+  --primary: #9BB89F;           /* Lighter Sage */
+  --primary-dark: #B8CCBB;      /* Soft Sage */
+  --secondary: #2D352E;         /* Dark Sage */
+  --accent: #7D9A82;            /* Sage Green */
+  --muted: #8A958C;             /* Muted Sage */
+  --border: #3A4239;            /* Dark Border */
 }
 
 body {
@@ -33,19 +46,19 @@ html {
 
 @layer components {
   .btn-primary {
-    @apply bg-[#7D9A82] hover:bg-[#5E7D63] text-white font-medium py-2.5 px-5 rounded-lg transition-colors duration-200;
+    @apply bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white font-medium py-2.5 px-5 rounded-lg transition-colors duration-200;
   }
 
   .btn-secondary {
-    @apply bg-[#FFFEF9] hover:bg-[#E8F0E9] text-[#3A4239] font-medium py-2.5 px-5 rounded-lg border border-[#E3EAE4] transition-colors duration-200;
+    @apply bg-[var(--background-card)] hover:bg-[var(--secondary)] text-[var(--foreground)] font-medium py-2.5 px-5 rounded-lg border border-[var(--border)] transition-colors duration-200;
   }
 
   .input-field {
-    @apply w-full px-4 py-3 rounded-lg border border-[#E3EAE4] focus:border-[#7D9A82] focus:ring-2 focus:ring-[#B8CCBB]/30 transition-all duration-200 bg-[#FFFEF9];
+    @apply w-full px-4 py-3 rounded-lg border border-[var(--border)] focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--accent)]/30 transition-all duration-200 bg-[var(--background-card)] text-[var(--foreground)];
   }
 
   .card {
-    @apply bg-[#FFFEF9] rounded-xl shadow-sm border border-[#E3EAE4] p-6 transition-shadow hover:shadow-md;
+    @apply bg-[var(--background-card)] rounded-xl shadow-sm border border-[var(--border)] p-6 transition-shadow hover:shadow-md;
   }
 }
 
