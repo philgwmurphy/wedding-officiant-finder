@@ -28,17 +28,22 @@ export interface DbOfficiant {
   updated_at: string;
 }
 
+export interface SearchResult {
+  results: OfficiantSearchResult[];
+  total: number;
+}
+
 /**
  * Search officiants with optional location-based filtering
  */
 export async function searchOfficiants(
   params: SearchParams
-): Promise<OfficiantSearchResult[]> {
+): Promise<SearchResult> {
   const isRadiusSearch = params.lat && params.lng && params.radius;
 
   let query = supabase
     .from("officiants")
-    .select("*")
+    .select("*", { count: "exact" })
     .order("last_name", { ascending: true });
 
   // Filter by affiliation if provided
@@ -66,7 +71,7 @@ export async function searchOfficiants(
     query = query.range(offset, offset + limit - 1);
   }
 
-  const { data, error } = await query;
+  const { data, error, count } = await query;
 
   if (error) {
     console.error("Search error:", error);
@@ -74,6 +79,7 @@ export async function searchOfficiants(
   }
 
   let results: OfficiantSearchResult[] = (data || []).map(dbToOfficiant);
+  let total = count || 0;
 
   // If we have coordinates, calculate distances and filter by radius
   if (params.lat && params.lng) {
@@ -93,23 +99,25 @@ export async function searchOfficiants(
         return officiant;
       })
       .filter((officiant) => {
-        // If radius is specified, filter by it
-        if (params.radius && officiant.distance !== undefined) {
-          return officiant.distance <= params.radius;
+        // For radius searches, only include officiants with valid coordinates
+        // that are within the specified radius
+        if (params.radius) {
+          return officiant.distance !== undefined && officiant.distance <= params.radius;
         }
         return true;
       })
       .sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity));
 
-    // Apply pagination after distance filtering for radius searches
+    // For radius searches, the total is the filtered count
     if (isRadiusSearch) {
+      total = results.length;
       const limit = params.limit || 50;
       const offset = params.offset || 0;
       results = results.slice(offset, offset + limit);
     }
   }
 
-  return results;
+  return { results, total };
 }
 
 /**

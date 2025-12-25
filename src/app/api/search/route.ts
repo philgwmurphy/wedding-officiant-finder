@@ -53,18 +53,21 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    const results = await searchOfficiants(params);
+    const { results, total } = await searchOfficiants(params);
 
     return NextResponse.json({
       success: true,
       results,
       count: results.length,
+      total,
       params: {
         location: params.location,
         lat: params.lat,
         lng: params.lng,
         radius: params.radius,
         affiliation: params.affiliation,
+        limit: params.limit,
+        offset: params.offset,
       },
     });
   } catch (error) {

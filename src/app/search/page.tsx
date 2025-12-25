@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import SearchForm from "@/components/SearchForm";
 import OfficiantCard from "@/components/OfficiantCard";
+import Pagination from "@/components/Pagination";
 import JsonLd from "@/components/JsonLd";
 import { generateBreadcrumbSchema } from "@/lib/schema";
 import type { OfficiantSearchResult } from "@/types/officiant";
@@ -11,6 +12,7 @@ import type { OfficiantSearchResult } from "@/types/officiant";
 export const dynamic = "force-dynamic";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://onweddingofficiants.ca";
+const RESULTS_PER_PAGE = 20;
 
 interface SearchPageProps {
   searchParams: {
@@ -20,6 +22,7 @@ interface SearchPageProps {
     radius?: string;
     lat?: string;
     lng?: string;
+    page?: string;
   };
 }
 
@@ -79,14 +82,26 @@ function buildSearchQuery(params: SearchPageProps["searchParams"]) {
 }
 
 async function getSearchResults(params: SearchPageProps["searchParams"]) {
-  const searchParams = buildSearchQuery(params);
+  const page = parseInt(params.page || "1", 10);
+  const offset = (page - 1) * RESULTS_PER_PAGE;
+
+  // Build search params with pagination
+  const searchParams = new URLSearchParams();
+  if (params.location) searchParams.set("location", params.location);
+  if (params.affiliation) searchParams.set("affiliation", params.affiliation);
+  if (params.q) searchParams.set("q", params.q);
+  if (params.radius) searchParams.set("radius", params.radius);
+  if (params.lat) searchParams.set("lat", params.lat);
+  if (params.lng) searchParams.set("lng", params.lng);
+  searchParams.set("limit", RESULTS_PER_PAGE.toString());
+  searchParams.set("offset", offset.toString());
 
   // Use absolute URL for server-side fetch
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
   try {
     const response = await fetch(
-      `${baseUrl}/api/search?${searchParams}`,
+      `${baseUrl}/api/search?${searchParams.toString()}`,
       { cache: "no-store" }
     );
 
@@ -95,10 +110,10 @@ async function getSearchResults(params: SearchPageProps["searchParams"]) {
     }
 
     const data = await response.json();
-    return data;
+    return { ...data, page };
   } catch (error) {
     console.error("Search error:", error);
-    return { success: false, results: [], error: "Search failed" };
+    return { success: false, results: [], total: 0, page: 1, error: "Search failed" };
   }
 }
 
@@ -142,8 +157,11 @@ async function SearchResults({
   }
 
   const results: OfficiantSearchResult[] = data.results;
+  const total: number = data.total || 0;
+  const currentPage: number = data.page || 1;
+  const totalPages = Math.ceil(total / RESULTS_PER_PAGE);
 
-  if (results.length === 0) {
+  if (results.length === 0 && currentPage === 1) {
     return (
       <div className="text-center py-12">
         <JsonLd data={breadcrumbs} />
@@ -183,7 +201,7 @@ async function SearchResults({
     "@type": "ItemList",
     itemListElement: results.map((officiant, index) => ({
       "@type": "ListItem",
-      position: index + 1,
+      position: (currentPage - 1) * RESULTS_PER_PAGE + index + 1,
       url: `${siteUrl}/officiant/${officiant.id}`,
       name: `${officiant.firstName} ${officiant.lastName}`,
       item: {
@@ -200,11 +218,15 @@ async function SearchResults({
     })),
   };
 
+  const startResult = (currentPage - 1) * RESULTS_PER_PAGE + 1;
+  const endResult = Math.min(currentPage * RESULTS_PER_PAGE, total);
+
   return (
     <>
       <JsonLd data={[breadcrumbs, itemListSchema]} />
       <p className="text-sm text-gray-500 mb-6">
-        Found <span className="font-medium">{results.length}</span> officiants
+        Showing <span className="font-medium">{startResult}-{endResult}</span> of{" "}
+        <span className="font-medium">{total}</span> officiants
         {searchParams.lat && searchParams.lng ? (
           <>
             {" "}
@@ -234,6 +256,12 @@ async function SearchResults({
           <OfficiantCard key={officiant.id} officiant={officiant} />
         ))}
       </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        basePath="/search"
+      />
     </>
   );
 }
