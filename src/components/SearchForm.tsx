@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 interface SearchFormProps {
@@ -79,8 +79,50 @@ export default function SearchForm({
   const [municipalities, setMunicipalities] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
+  const [gettingLocation, setGettingLocation] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const hasRequestedMunicipalities = useRef(false);
+
+  const handleNearMe = useCallback(() => {
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by your browser");
+      return;
+    }
+
+    setGettingLocation(true);
+    setLocationError(null);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const params = new URLSearchParams();
+        params.set("lat", latitude.toFixed(6));
+        params.set("lng", longitude.toFixed(6));
+        params.set("radius", "25");
+        if (affiliation) params.set("affiliation", affiliation);
+        router.push(`/search?${params.toString()}`);
+        setGettingLocation(false);
+      },
+      (error) => {
+        setGettingLocation(false);
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            setLocationError("Location access denied. Please enable it in your browser settings.");
+            break;
+          case error.POSITION_UNAVAILABLE:
+            setLocationError("Location unavailable. Please try again or enter manually.");
+            break;
+          case error.TIMEOUT:
+            setLocationError("Location request timed out. Please try again.");
+            break;
+          default:
+            setLocationError("Unable to get your location. Please enter manually.");
+        }
+      },
+      { timeout: 10000, enableHighAccuracy: false }
+    );
+  }, [affiliation, router]);
 
   // Keep local state in sync when navigating between searches on the results page
   useEffect(() => {
@@ -168,7 +210,7 @@ export default function SearchForm({
             onChange={(e) => setLocation(e.target.value)}
             onFocus={() => setShowSuggestions(true)}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-            placeholder="City, town, or Canadian postal code (spaces optional)"
+            placeholder="City, town, or postal code"
             className="input-field text-sm py-2"
           />
           {showSuggestions && filteredSuggestions.length > 0 && (
@@ -185,6 +227,25 @@ export default function SearchForm({
             </ul>
           )}
         </div>
+        <button
+          type="button"
+          onClick={handleNearMe}
+          disabled={gettingLocation}
+          className="btn-secondary text-sm py-2 px-3 flex items-center gap-1"
+          title="Use my location"
+        >
+          {gettingLocation ? (
+            <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            </svg>
+          ) : (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.364-5.364l-1.414 1.414M8.05 15.95l-1.414 1.414m0-11.314l1.414 1.414m9.9 9.9l1.414 1.414" />
+            </svg>
+          )}
+        </button>
         <button type="submit" className="btn-primary text-sm py-2 px-4">
           Search
         </button>
@@ -198,12 +259,38 @@ export default function SearchForm({
         <div className="space-y-4">
           {/* Location Input */}
           <div className="relative">
-            <label
-              htmlFor="location"
-              className="block text-sm font-medium text-gray-700 mb-1.5"
-            >
-              Where is your wedding? (city or Canadian postal code, spaces optional)
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label
+                htmlFor="location"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Where is your wedding?
+              </label>
+              <button
+                type="button"
+                onClick={handleNearMe}
+                disabled={gettingLocation}
+                className="text-sm text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1 disabled:opacity-50"
+              >
+                {gettingLocation ? (
+                  <>
+                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    <span>Getting location...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.364-5.364l-1.414 1.414M8.05 15.95l-1.414 1.414m0-11.314l1.414 1.414m9.9 9.9l1.414 1.414" />
+                    </svg>
+                    <span>Use my location</span>
+                  </>
+                )}
+              </button>
+            </div>
             <div className="relative">
               <svg
                 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -232,10 +319,13 @@ export default function SearchForm({
                 onChange={(e) => setLocation(e.target.value)}
                 onFocus={() => setShowSuggestions(true)}
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                placeholder="Enter city, town, or Canadian postal code (with or without space)"
+                placeholder="Enter city, town, or postal code"
                 className="input-field pl-10"
               />
             </div>
+            {locationError && (
+              <p className="mt-1.5 text-sm text-red-600">{locationError}</p>
+            )}
             {showSuggestions && filteredSuggestions.length > 0 && (
               <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg mt-1 shadow-lg max-h-48 overflow-y-auto">
                 {filteredSuggestions.map((suggestion) => (
