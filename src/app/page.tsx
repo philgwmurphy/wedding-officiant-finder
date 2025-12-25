@@ -89,17 +89,17 @@ export default function Home() {
       </main>
 
       {/* Features Section */}
-      <section className="py-16 px-4 bg-white border-t border-gray-100">
+      <section className="py-16 px-4 bg-[var(--background-card)] border-t border-[var(--border)]">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-center text-[var(--foreground)] mb-12">
             How It Works
           </h2>
 
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-12 h-12 bg-[#E8F0E9] rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-[var(--secondary)] rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg
-                  className="w-6 h-6 text-[#7D9A82]"
+                  className="w-6 h-6 text-[var(--primary)]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -112,19 +112,19 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">
+              <h3 className="font-semibold text-[var(--foreground)] mb-2">
                 Search by Location
               </h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-[var(--muted)] text-sm">
                 Enter your wedding location and find officiants nearby, sorted
                 by distance.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="w-12 h-12 bg-[#E8F0E9] rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-[var(--secondary)] rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg
-                  className="w-6 h-6 text-[#7D9A82]"
+                  className="w-6 h-6 text-[var(--primary)]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -137,19 +137,19 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">
+              <h3 className="font-semibold text-[var(--foreground)] mb-2">
                 Filter by Style
               </h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-[var(--muted)] text-sm">
                 Looking for a specific denomination or secular ceremony? Filter
                 by affiliation.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="w-12 h-12 bg-[#E8F0E9] rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-[var(--secondary)] rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg
-                  className="w-6 h-6 text-[#7D9A82]"
+                  className="w-6 h-6 text-[var(--primary)]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -162,10 +162,10 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">
+              <h3 className="font-semibold text-[var(--foreground)] mb-2">
                 View Officiant Profiles
               </h3>
-              <p className="text-gray-600 text-sm">
+              <p className="text-[var(--muted)] text-sm">
                 Browse detailed profiles and find the perfect match for your
                 ceremony style.
               </p>
@@ -175,19 +175,19 @@ export default function Home() {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-16 px-4 bg-gray-50 border-t border-gray-100">
+        <section className="py-16 px-4 bg-[var(--secondary)] border-t border-[var(--border)]">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-center text-[var(--foreground)] mb-12">
               Frequently Asked Questions
             </h2>
 
             <div className="space-y-6">
               {HOMEPAGE_FAQS.map((faq, index) => (
-                <div key={index} className="bg-white rounded-xl p-6 shadow-sm">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                <div key={index} className="bg-[var(--background-card)] rounded-xl p-6 shadow-sm">
+                  <h3 className="text-lg font-semibold text-[var(--foreground)] mb-3">
                     {faq.question}
                   </h3>
-                  <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+                  <p className="text-[var(--muted)] leading-relaxed">{faq.answer}</p>
                 </div>
               ))}
             </div>
@@ -195,20 +195,20 @@ export default function Home() {
         </section>
 
         {/* Popular Searches Section */}
-        <section className="py-12 px-4 bg-white border-t border-gray-100">
+        <section className="py-12 px-4 bg-[var(--background-card)] border-t border-[var(--border)]">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">
+            <h2 className="text-xl font-bold text-[var(--foreground)] mb-6">
               Popular Searches
             </h2>
             <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <h3 className="font-semibold text-gray-700 mb-3">By City</h3>
+                <h3 className="font-semibold text-[var(--foreground)] mb-3">By City</h3>
                 <div className="flex flex-wrap gap-2">
                   {CITY_LANDING_PAGES.slice(0, 12).map((city) => (
                     <Link
                       key={city.slug}
                       href={`/${city.slug}`}
-                      className="text-sm text-[#7D9A82] hover:text-[#5E7D63] hover:underline"
+                      className="text-sm text-[var(--primary)] hover:text-[var(--primary-dark)] hover:underline"
                     >
                       {city.city}
                     </Link>
@@ -216,13 +216,13 @@ export default function Home() {
                 </div>
               </div>
               <div>
-                <h3 className="font-semibold text-gray-700 mb-3">By Ceremony Type</h3>
+                <h3 className="font-semibold text-[var(--foreground)] mb-3">By Ceremony Type</h3>
                 <div className="flex flex-wrap gap-2">
                   {AFFILIATION_LANDING_PAGES.slice(0, 10).map((aff) => (
                     <Link
                       key={aff.slug}
                       href={`/affiliation/${aff.slug}`}
-                      className="text-sm text-[#7D9A82] hover:text-[#5E7D63] hover:underline"
+                      className="text-sm text-[var(--primary)] hover:text-[var(--primary-dark)] hover:underline"
                     >
                       {aff.label}
                     </Link>
@@ -234,15 +234,15 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="py-8 px-4 border-t border-gray-100">
-          <div className="max-w-5xl mx-auto text-center text-sm text-gray-500">
+        <footer className="py-8 px-4 border-t border-[var(--border)]">
+          <div className="max-w-5xl mx-auto text-center text-sm text-[var(--muted)]">
             <p>
               Data sourced from the{" "}
               <a
                 href="https://data.ontario.ca/dataset/registered-marriage-officiants"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#7D9A82] hover:underline"
+                className="text-[var(--primary)] hover:underline"
               >
                 Ontario Data Catalogue
               </a>

@@ -36,16 +36,16 @@ export default function OfficiantCard({ officiant }: OfficiantCardProps) {
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">
               <div>
-                <h3 className="font-semibold text-gray-900 group-hover:text-[#7D9A82] transition-colors">
+                <h3 className="font-semibold text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors">
                   {officiant.firstName} {officiant.lastName}
                 </h3>
-                <p className="text-sm text-gray-600 mt-0.5">
+                <p className="text-sm text-[var(--muted)] mt-0.5">
                   {officiant.municipality}
                 </p>
               </div>
 
               {distanceText && (
-                <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full whitespace-nowrap">
+                <span className="text-xs text-[var(--muted)] bg-[var(--secondary)] px-2 py-1 rounded-full whitespace-nowrap">
                   {distanceText}
                 </span>
               )}
@@ -63,10 +63,10 @@ export default function OfficiantCard({ officiant }: OfficiantCardProps) {
         </div>
 
         {/* Hover indicator */}
-        <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-sm">
-          <span className="text-gray-500">View profile</span>
+        <div className="mt-4 pt-3 border-t border-[var(--border)] flex items-center justify-between text-sm">
+          <span className="text-[var(--muted)]">View profile</span>
           <svg
-            className="w-4 h-4 text-gray-400 group-hover:text-[#7D9A82] group-hover:translate-x-1 transition-all"
+            className="w-4 h-4 text-[var(--muted)] group-hover:text-[var(--primary)] group-hover:translate-x-1 transition-all"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -96,30 +96,30 @@ function getAffiliationCategory(affiliation: string): {
   // Catholic/Roman Catholic
   if (lower.includes("catholic")) {
     return {
-      bgColor: "bg-amber-100",
-      textColor: "text-amber-700",
-      pillBg: "bg-amber-50",
-      pillText: "text-amber-700",
+      bgColor: "bg-amber-100 dark:bg-amber-900/30",
+      textColor: "text-amber-700 dark:text-amber-300",
+      pillBg: "bg-amber-50 dark:bg-amber-900/20",
+      pillText: "text-amber-700 dark:text-amber-300",
     };
   }
 
   // Anglican
   if (lower.includes("anglican")) {
     return {
-      bgColor: "bg-blue-100",
-      textColor: "text-blue-700",
-      pillBg: "bg-blue-50",
-      pillText: "text-blue-700",
+      bgColor: "bg-blue-100 dark:bg-blue-900/30",
+      textColor: "text-blue-700 dark:text-blue-300",
+      pillBg: "bg-blue-50 dark:bg-blue-900/20",
+      pillText: "text-blue-700 dark:text-blue-300",
     };
   }
 
   // United Church
   if (lower.includes("united")) {
     return {
-      bgColor: "bg-red-100",
-      textColor: "text-red-700",
-      pillBg: "bg-red-50",
-      pillText: "text-red-700",
+      bgColor: "bg-red-100 dark:bg-red-900/30",
+      textColor: "text-red-700 dark:text-red-300",
+      pillBg: "bg-red-50 dark:bg-red-900/20",
+      pillText: "text-red-700 dark:text-red-300",
     };
   }
 
@@ -131,38 +131,38 @@ function getAffiliationCategory(affiliation: string): {
     lower.includes("civil")
   ) {
     return {
-      bgColor: "bg-slate-100",
-      textColor: "text-slate-700",
-      pillBg: "bg-slate-50",
-      pillText: "text-slate-700",
+      bgColor: "bg-slate-100 dark:bg-slate-700/30",
+      textColor: "text-slate-700 dark:text-slate-300",
+      pillBg: "bg-slate-50 dark:bg-slate-700/20",
+      pillText: "text-slate-700 dark:text-slate-300",
     };
   }
 
   // Spiritualist / New Age
   if (lower.includes("spiritual")) {
     return {
-      bgColor: "bg-purple-100",
-      textColor: "text-purple-700",
-      pillBg: "bg-purple-50",
-      pillText: "text-purple-700",
+      bgColor: "bg-purple-100 dark:bg-purple-900/30",
+      textColor: "text-purple-700 dark:text-purple-300",
+      pillBg: "bg-purple-50 dark:bg-purple-900/20",
+      pillText: "text-purple-700 dark:text-purple-300",
     };
   }
 
   // Jewish
   if (lower.includes("jewish") || lower.includes("synagogue")) {
     return {
-      bgColor: "bg-indigo-100",
-      textColor: "text-indigo-700",
-      pillBg: "bg-indigo-50",
-      pillText: "text-indigo-700",
+      bgColor: "bg-indigo-100 dark:bg-indigo-900/30",
+      textColor: "text-indigo-700 dark:text-indigo-300",
+      pillBg: "bg-indigo-50 dark:bg-indigo-900/20",
+      pillText: "text-indigo-700 dark:text-indigo-300",
     };
   }
 
-  // Default
+  // Default - uses theme variables for sage color
   return {
-    bgColor: "bg-[#E8F0E9]",
-    textColor: "text-[#5E7D63]",
-    pillBg: "bg-[#E8F0E9]",
-    pillText: "text-[#5E7D63]",
+    bgColor: "bg-[var(--secondary)]",
+    textColor: "text-[var(--primary-dark)]",
+    pillBg: "bg-[var(--secondary)]",
+    pillText: "text-[var(--primary-dark)]",
   };
 }
