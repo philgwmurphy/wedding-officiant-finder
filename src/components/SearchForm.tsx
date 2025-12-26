@@ -271,7 +271,7 @@ export default function SearchForm({
                 type="button"
                 onClick={handleNearMe}
                 disabled={gettingLocation}
-                className="text-sm text-[#7D9A82] hover:text-[#5E7D63] font-medium flex items-center gap-1 disabled:opacity-50"
+                className="text-sm text-[var(--primary)] hover:text-[var(--primary-dark)] font-medium flex items-center gap-1 disabled:opacity-50"
               >
                 {gettingLocation ? (
                   <>

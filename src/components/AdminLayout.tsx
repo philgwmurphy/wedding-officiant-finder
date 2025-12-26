@@ -59,8 +59,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   if (isAuthenticated === null) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-[#7D9A82] border-t-transparent rounded-full"></div>
+      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-[var(--primary)] border-t-transparent rounded-full"></div>
       </div>
     );
   }
@@ -95,13 +95,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--background)]">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <header className="bg-[var(--background-card)] border-b border-[var(--border)] sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-8">
-              <Link href="/admin" className="text-xl font-bold text-[#7D9A82]">
+              <Link href="/admin" className="text-xl font-bold text-[var(--primary)]">
                 Admin
               </Link>
               <nav className="hidden md:flex items-center gap-1">
@@ -111,8 +111,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     href={item.href}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       pathname === item.href
-                        ? "bg-[#E8F0E9] text-[#5E7D63]"
-                        : "text-gray-600 hover:bg-gray-100"
+                        ? "bg-[var(--secondary)] text-[var(--primary-dark)]"
+                        : "text-[var(--muted)] hover:bg-[var(--secondary)]"
                     }`}
                   >
                     {getIcon(item.icon)}
@@ -124,13 +124,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             <div className="flex items-center gap-4">
               <Link
                 href="/"
-                className="text-sm text-gray-600 hover:text-gray-900"
+                className="text-sm text-[var(--muted)] hover:text-[var(--foreground)]"
               >
                 View Site
               </Link>
               <button
                 onClick={handleLogout}
-                className="text-sm text-red-600 hover:text-red-800"
+                className="text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
               >
                 Logout
               </button>
@@ -144,8 +144,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 href={item.href}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                   pathname === item.href
-                    ? "bg-[#E8F0E9] text-[#5E7D63]"
-                    : "text-gray-600 hover:bg-gray-100"
+                    ? "bg-[var(--secondary)] text-[var(--primary-dark)]"
+                    : "text-[var(--muted)] hover:bg-[var(--secondary)]"
                 }`}
               >
                 {getIcon(item.icon)}
