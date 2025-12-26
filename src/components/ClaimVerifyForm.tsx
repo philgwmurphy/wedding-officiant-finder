@@ -103,10 +103,10 @@ export default function ClaimVerifyForm({
   if (success) {
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 text-center">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="bg-[var(--background-card)] rounded-xl shadow-xl max-w-md w-full p-6 text-center">
+          <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg
-              className="w-8 h-8 text-green-600"
+              className="w-8 h-8 text-green-600 dark:text-green-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -119,10 +119,10 @@ export default function ClaimVerifyForm({
               />
             </svg>
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          <h2 className="text-xl font-semibold text-[var(--foreground)] mb-2">
             Email Verified!
           </h2>
-          <p className="text-gray-600">
+          <p className="text-[var(--muted)]">
             Your claim is pending admin approval. You&apos;ll receive an email
             once your profile is verified.
           </p>
@@ -133,11 +133,11 @@ export default function ClaimVerifyForm({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">
+      <div className="bg-[var(--background-card)] rounded-xl shadow-xl max-w-md w-full p-6">
+        <h2 className="text-xl font-semibold text-[var(--foreground)] mb-2">
           Enter Verification Code
         </h2>
-        <p className="text-gray-600 text-sm mb-6">
+        <p className="text-[var(--muted)] text-sm mb-6">
           We sent a 6-digit code to <strong>{email}</strong>
         </p>
 
@@ -156,13 +156,13 @@ export default function ClaimVerifyForm({
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={handlePaste}
               disabled={isLoading}
-              className="w-12 h-14 text-center text-2xl font-bold border-2 border-gray-300 rounded-lg focus:border-[#7D9A82] focus:ring-2 focus:ring-[#B8CCBB]/30 transition-all disabled:opacity-50"
+              className="w-12 h-14 text-center text-2xl font-bold border-2 border-[var(--border)] rounded-lg focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary-light)]/30 transition-all disabled:opacity-50 bg-[var(--background)] text-[var(--foreground)]"
             />
           ))}
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm mb-4 text-center">
+          <div className="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm mb-4 text-center">
             {error}
           </div>
         )}
@@ -211,9 +211,9 @@ export default function ClaimVerifyForm({
           </button>
         </div>
 
-        <p className="text-xs text-gray-500 text-center mt-4">
+        <p className="text-xs text-[var(--muted)] text-center mt-4">
           Didn&apos;t receive the code? Check your spam folder or{" "}
-          <button onClick={onBack} className="text-[#7D9A82] hover:underline">
+          <button onClick={onBack} className="text-[var(--primary)] hover:underline">
             try again
           </button>
         </p>

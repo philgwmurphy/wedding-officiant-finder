@@ -215,12 +215,12 @@ export default function SearchForm({
             className="input-field text-sm py-2"
           />
           {showSuggestions && filteredSuggestions.length > 0 && (
-            <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg mt-1 shadow-lg max-h-48 overflow-y-auto">
+            <ul className="absolute z-10 w-full bg-[var(--background-card)] border border-[var(--border)] rounded-lg mt-1 shadow-lg max-h-48 overflow-y-auto">
               {filteredSuggestions.map((suggestion) => (
                 <li
                   key={suggestion}
                   onClick={() => selectSuggestion(suggestion)}
-                  className="px-4 py-2 hover:bg-[#E8F0E9] cursor-pointer text-sm"
+                  className="px-4 py-2 hover:bg-[var(--secondary)] cursor-pointer text-sm text-[var(--foreground)]"
                 >
                   {suggestion}
                 </li>
@@ -256,14 +256,14 @@ export default function SearchForm({
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto">
-      <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+      <div className="bg-[var(--background-card)] rounded-2xl shadow-lg p-6 md:p-8">
         <div className="space-y-4">
           {/* Location Input */}
           <div className="relative">
             <div className="flex items-center justify-between mb-1.5">
               <label
                 htmlFor="location"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-[var(--foreground)]"
               >
                 Where is your wedding?
               </label>
@@ -294,7 +294,7 @@ export default function SearchForm({
             </div>
             <div className="relative">
               <svg
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--muted)]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -328,15 +328,15 @@ export default function SearchForm({
               <p className="mt-1.5 text-sm text-red-600">{locationError}</p>
             )}
             {showSuggestions && filteredSuggestions.length > 0 && (
-              <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg mt-1 shadow-lg max-h-48 overflow-y-auto">
+              <ul className="absolute z-10 w-full bg-[var(--background-card)] border border-[var(--border)] rounded-lg mt-1 shadow-lg max-h-48 overflow-y-auto">
                 {filteredSuggestions.map((suggestion) => (
                   <li
                     key={suggestion}
                     onClick={() => selectSuggestion(suggestion)}
-                    className="px-4 py-3 hover:bg-[#E8F0E9] cursor-pointer flex items-center gap-2"
+                    className="px-4 py-3 hover:bg-[var(--secondary)] cursor-pointer flex items-center gap-2 text-[var(--foreground)]"
                   >
                     <svg
-                      className="w-4 h-4 text-gray-400"
+                      className="w-4 h-4 text-[var(--muted)]"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -359,13 +359,13 @@ export default function SearchForm({
           <div>
             <label
               htmlFor="affiliation"
-              className="block text-sm font-medium text-gray-700 mb-1.5"
+              className="block text-sm font-medium text-[var(--foreground)] mb-1.5"
             >
               Ceremony type (optional)
             </label>
             <div className="relative">
               <svg
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--muted)]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
