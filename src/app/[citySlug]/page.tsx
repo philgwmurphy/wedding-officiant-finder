@@ -37,6 +37,12 @@ export async function generateMetadata({ params }: CityPageProps): Promise<Metad
     openGraph: {
       title,
       description,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
     },
     alternates: {
       canonical: `${SITE_URL}/${city.slug}`,

@@ -37,6 +37,12 @@ export async function generateMetadata({ params }: AffiliationPageProps): Promis
     openGraph: {
       title,
       description,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
     },
     alternates: {
       canonical: `${SITE_URL}/affiliation/${affiliation.slug}`,
