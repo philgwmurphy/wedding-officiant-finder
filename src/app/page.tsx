@@ -26,7 +26,7 @@ export default function Home() {
         </header>
 
         {/* Hero Section */}
-        <main className="flex-1 flex flex-col items-center justify-center px-4 py-16 md:py-24">
+        <main id="main-content" className="flex-1 flex flex-col items-center justify-center px-4 py-16 md:py-24">
         <div className="text-center max-w-3xl mx-auto mb-10">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[var(--foreground)] mb-4 text-balance">
             Find your perfect
@@ -42,12 +42,13 @@ export default function Home() {
         <SearchForm />
 
         {/* Trust indicators */}
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-[var(--muted)]">
-          <div className="flex items-center gap-2">
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-[var(--muted)]" role="list" aria-label="Trust indicators">
+          <div className="flex items-center gap-2" role="listitem">
             <svg
               className="w-5 h-5 text-green-500"
               fill="currentColor"
               viewBox="0 0 20 20"
+              aria-hidden="true"
             >
               <path
                 fillRule="evenodd"
@@ -57,11 +58,12 @@ export default function Home() {
             </svg>
             <span>Official Ontario Registry Data</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" role="listitem">
             <svg
               className="w-5 h-5 text-green-500"
               fill="currentColor"
               viewBox="0 0 20 20"
+              aria-hidden="true"
             >
               <path
                 fillRule="evenodd"
@@ -71,11 +73,12 @@ export default function Home() {
             </svg>
             <span>22,000+ Registered Officiants</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" role="listitem">
             <svg
               className="w-5 h-5 text-green-500"
               fill="currentColor"
               viewBox="0 0 20 20"
+              aria-hidden="true"
             >
               <path
                 fillRule="evenodd"
@@ -97,7 +100,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-12 h-12 bg-[var(--secondary)] rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-[var(--secondary)] rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true">
                 <svg
                   className="w-6 h-6 text-[var(--primary)]"
                   fill="none"
@@ -122,7 +125,7 @@ export default function Home() {
             </div>
 
             <div className="text-center">
-              <div className="w-12 h-12 bg-[var(--secondary)] rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-[var(--secondary)] rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true">
                 <svg
                   className="w-6 h-6 text-[var(--primary)]"
                   fill="none"
@@ -147,7 +150,7 @@ export default function Home() {
             </div>
 
             <div className="text-center">
-              <div className="w-12 h-12 bg-[var(--secondary)] rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-[var(--secondary)] rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true">
                 <svg
                   className="w-6 h-6 text-[var(--primary)]"
                   fill="none"
@@ -234,24 +237,91 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="py-8 px-4 border-t border-[var(--border)]">
-          <div className="max-w-5xl mx-auto text-center text-sm text-[var(--muted)]">
-            <p>
-              Data sourced from the{" "}
-              <a
-                href="https://data.ontario.ca/dataset/registered-marriage-officiants"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[var(--primary)] hover:underline"
-              >
-                Ontario Data Catalogue
-              </a>
-              . Updated regularly.
-            </p>
-            <p className="mt-2">
-              This is an independent project and is not affiliated with the
-              Government of Ontario.
-            </p>
+        <footer className="py-12 px-4 border-t border-[var(--border)] bg-[var(--background-card)]" role="contentinfo">
+          <div className="max-w-5xl mx-auto">
+            {/* Footer Navigation */}
+            <nav className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8" aria-label="Footer navigation">
+              <div>
+                <h4 className="font-semibold text-[var(--foreground)] mb-3">Popular Cities</h4>
+                <ul className="space-y-2">
+                  {CITY_LANDING_PAGES.slice(0, 5).map((city) => (
+                    <li key={city.slug}>
+                      <Link
+                        href={`/${city.slug}`}
+                        className="text-sm text-[var(--muted)] hover:text-[var(--primary)]"
+                      >
+                        {city.city} Officiants
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-[var(--foreground)] mb-3">More Cities</h4>
+                <ul className="space-y-2">
+                  {CITY_LANDING_PAGES.slice(5, 10).map((city) => (
+                    <li key={city.slug}>
+                      <Link
+                        href={`/${city.slug}`}
+                        className="text-sm text-[var(--muted)] hover:text-[var(--primary)]"
+                      >
+                        {city.city} Officiants
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-[var(--foreground)] mb-3">Ceremony Types</h4>
+                <ul className="space-y-2">
+                  {AFFILIATION_LANDING_PAGES.slice(0, 5).map((aff) => (
+                    <li key={aff.slug}>
+                      <Link
+                        href={`/affiliation/${aff.slug}`}
+                        className="text-sm text-[var(--muted)] hover:text-[var(--primary)]"
+                      >
+                        {aff.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-[var(--foreground)] mb-3">More Types</h4>
+                <ul className="space-y-2">
+                  {AFFILIATION_LANDING_PAGES.slice(5, 10).map((aff) => (
+                    <li key={aff.slug}>
+                      <Link
+                        href={`/affiliation/${aff.slug}`}
+                        className="text-sm text-[var(--muted)] hover:text-[var(--primary)]"
+                      >
+                        {aff.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </nav>
+
+            {/* Footer Info */}
+            <div className="pt-8 border-t border-[var(--border)] text-center text-sm text-[var(--muted)]">
+              <p>
+                Data sourced from the{" "}
+                <a
+                  href="https://data.ontario.ca/dataset/registered-marriage-officiants"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[var(--primary)] hover:underline"
+                >
+                  Ontario Data Catalogue
+                </a>
+                . Updated regularly.
+              </p>
+              <p className="mt-2">
+                This is an independent project and is not affiliated with the
+                Government of Ontario.
+              </p>
+            </div>
           </div>
         </footer>
       </div>
