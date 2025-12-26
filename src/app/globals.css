@@ -3,29 +3,31 @@
 @tailwind utilities;
 
 :root {
-  /* Sage & Ivory Palette - Light Mode */
-  --background: #FDFCF8;        /* Ivory */
-  --background-card: #FFFEF9;   /* Warm White */
-  --foreground: #3A4239;        /* Deep Green Gray */
-  --primary: #7D9A82;           /* Sage Green */
-  --primary-dark: #5E7D63;      /* Forest Sage */
-  --secondary: #E8F0E9;         /* Light Sage */
-  --accent: #B8CCBB;            /* Soft Sage */
-  --muted: #7A8578;             /* Olive Gray */
-  --border: #E3EAE4;            /* Pale Sage */
+  /* Dusty Rose & Champagne Palette - Light Mode */
+  --background: #FAF8F5;          /* Warm Cream */
+  --background-card: #FFFFFF;     /* White */
+  --foreground: #4A3F3A;          /* Warm Dark Brown */
+  --primary: #C9A9A6;             /* Dusty Rose */
+  --primary-dark: #A67F7B;        /* Deep Rose */
+  --primary-light: #DBC8C5;       /* Light Rose */
+  --secondary: #F5EDE8;           /* Champagne Cream */
+  --accent: #8B7355;              /* Warm Bronze */
+  --muted: #8A7D78;               /* Warm Gray */
+  --border: #E8E0DA;              /* Warm Beige */
 }
 
 .dark {
-  /* Dark Sage Palette - Dark Mode */
-  --background: #1A1F1B;        /* Dark Forest */
-  --background-card: #242A25;   /* Dark Card */
-  --foreground: #E8EDE9;        /* Light Sage Text */
-  --primary: #9BB89F;           /* Lighter Sage */
-  --primary-dark: #B8CCBB;      /* Soft Sage */
-  --secondary: #2D352E;         /* Dark Sage */
-  --accent: #7D9A82;            /* Sage Green */
-  --muted: #8A958C;             /* Muted Sage */
-  --border: #3A4239;            /* Dark Border */
+  /* Dusty Rose & Champagne - Dark Mode */
+  --background: #1F1A18;          /* Dark Warm Brown */
+  --background-card: #2A2320;     /* Dark Card */
+  --foreground: #F0E8E4;          /* Light Cream */
+  --primary: #D4B8B5;             /* Light Dusty Rose */
+  --primary-dark: #E0C8C5;        /* Lighter Rose */
+  --primary-light: #C9A9A6;       /* Original Rose */
+  --secondary: #302825;           /* Dark Rose-Brown */
+  --accent: #B8967A;              /* Light Bronze */
+  --muted: #A09590;               /* Muted Warm */
+  --border: #3D3330;              /* Dark Border */
 }
 
 body {
