@@ -89,12 +89,12 @@ export default function Pagination({
       {currentPage > 1 ? (
         <Link
           href={createPageUrl(currentPage - 1)}
-          className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          className="px-3 py-2 text-sm font-medium text-[var(--foreground)] bg-[var(--background-card)] border border-[var(--border)] rounded-lg hover:bg-[var(--secondary)]"
         >
           Previous
         </Link>
       ) : (
-        <span className="px-3 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed">
+        <span className="px-3 py-2 text-sm font-medium text-[var(--muted)] bg-[var(--secondary)] border border-[var(--border)] rounded-lg cursor-not-allowed">
           Previous
         </span>
       )}
@@ -105,7 +105,7 @@ export default function Pagination({
           page === "..." ? (
             <span
               key={`ellipsis-${index}`}
-              className="px-3 py-2 text-sm text-gray-500"
+              className="px-3 py-2 text-sm text-[var(--muted)]"
             >
               ...
             </span>
@@ -115,8 +115,8 @@ export default function Pagination({
               href={createPageUrl(page)}
               className={`px-3 py-2 text-sm font-medium rounded-lg ${
                 page === currentPage
-                  ? "bg-[#7D9A82] text-white"
-                  : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+                  ? "bg-[var(--primary)] text-white"
+                  : "text-[var(--foreground)] bg-[var(--background-card)] border border-[var(--border)] hover:bg-[var(--secondary)]"
               }`}
             >
               {page}
@@ -126,7 +126,7 @@ export default function Pagination({
       </div>
 
       {/* Mobile page indicator */}
-      <span className="sm:hidden px-3 py-2 text-sm text-gray-700">
+      <span className="sm:hidden px-3 py-2 text-sm text-[var(--foreground)]">
         Page {currentPage} of {totalPages}
       </span>
 
@@ -134,12 +134,12 @@ export default function Pagination({
       {currentPage < totalPages ? (
         <Link
           href={createPageUrl(currentPage + 1)}
-          className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          className="px-3 py-2 text-sm font-medium text-[var(--foreground)] bg-[var(--background-card)] border border-[var(--border)] rounded-lg hover:bg-[var(--secondary)]"
         >
           Next
         </Link>
       ) : (
-        <span className="px-3 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed">
+        <span className="px-3 py-2 text-sm font-medium text-[var(--muted)] bg-[var(--secondary)] border border-[var(--border)] rounded-lg cursor-not-allowed">
           Next
         </span>
       )}

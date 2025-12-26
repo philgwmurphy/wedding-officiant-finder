@@ -34,8 +34,8 @@ export default function ClaimProfile({
 
   if (step === "complete") {
     return (
-      <div className="border border-green-200 bg-green-50 rounded-lg p-4 text-center">
-        <div className="flex items-center justify-center gap-2 text-green-700 font-medium">
+      <div className="border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 rounded-lg p-4 text-center">
+        <div className="flex items-center justify-center gap-2 text-green-700 dark:text-green-400 font-medium">
           <svg
             className="w-5 h-5"
             fill="currentColor"
@@ -49,7 +49,7 @@ export default function ClaimProfile({
           </svg>
           Claim Submitted
         </div>
-        <p className="text-sm text-green-600 mt-1">
+        <p className="text-sm text-green-600 dark:text-green-400 mt-1">
           Your profile claim is pending approval.
         </p>
       </div>
@@ -61,9 +61,9 @@ export default function ClaimProfile({
       {step === "button" && (
         <button
           onClick={() => setStep("form")}
-          className="w-full border-2 border-dashed border-[#B8CCBB] rounded-lg p-4 text-center hover:border-[#7D9A82] hover:bg-[#E8F0E9] transition-colors group"
+          className="w-full border-2 border-dashed border-[var(--primary-light)] rounded-lg p-4 text-center hover:border-[var(--primary)] hover:bg-[var(--secondary)] transition-colors group"
         >
-          <div className="flex items-center justify-center gap-2 text-[#7D9A82] font-medium group-hover:text-[#5E7D63]">
+          <div className="flex items-center justify-center gap-2 text-[var(--primary)] font-medium group-hover:text-[var(--primary-dark)]">
             <svg
               className="w-5 h-5"
               fill="none"
@@ -79,7 +79,7 @@ export default function ClaimProfile({
             </svg>
             Is this you? Claim this profile
           </div>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-[var(--muted)] mt-1">
             Add your contact info so couples can reach you
           </p>
         </button>

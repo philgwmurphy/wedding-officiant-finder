@@ -2,11 +2,11 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[var(--background)] flex items-center justify-center px-4">
       <div className="text-center">
-        <div className="w-20 h-20 bg-[#E8F0E9] rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="w-20 h-20 bg-[var(--secondary)] rounded-full flex items-center justify-center mx-auto mb-6">
           <svg
-            className="w-10 h-10 text-[#7D9A82]"
+            className="w-10 h-10 text-[var(--primary)]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -19,8 +19,8 @@ export default function NotFound() {
             />
           </svg>
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Page Not Found</h1>
-        <p className="text-gray-600 mb-6">
+        <h1 className="text-2xl font-bold text-[var(--foreground)] mb-2">Page Not Found</h1>
+        <p className="text-[var(--muted)] mb-6">
           The page you&apos;re looking for doesn&apos;t exist or has been moved.
         </p>
         <Link href="/" className="btn-primary inline-block">

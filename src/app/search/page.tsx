@@ -123,11 +123,11 @@ function SearchResultsSkeleton() {
       {[...Array(5)].map((_, i) => (
         <div key={i} className="card animate-pulse">
           <div className="flex gap-4">
-            <div className="w-14 h-14 bg-gray-200 rounded-full" />
+            <div className="w-14 h-14 bg-[var(--secondary)] rounded-full" />
             <div className="flex-1">
-              <div className="h-5 bg-gray-200 rounded w-1/3 mb-2" />
-              <div className="h-4 bg-gray-200 rounded w-1/4 mb-3" />
-              <div className="h-6 bg-gray-200 rounded w-1/2" />
+              <div className="h-5 bg-[var(--secondary)] rounded w-1/3 mb-2" />
+              <div className="h-4 bg-[var(--secondary)] rounded w-1/4 mb-3" />
+              <div className="h-6 bg-[var(--secondary)] rounded w-1/2" />
             </div>
           </div>
         </div>
@@ -149,7 +149,7 @@ async function SearchResults({
     return (
       <div className="text-center py-12">
         <JsonLd data={breadcrumbs} />
-        <p className="text-gray-500">
+        <p className="text-[var(--muted)]">
           Something went wrong. Please try again.
         </p>
       </div>
@@ -165,9 +165,9 @@ async function SearchResults({
     return (
       <div className="text-center py-12">
         <JsonLd data={breadcrumbs} />
-        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-[var(--secondary)] rounded-full flex items-center justify-center mx-auto mb-4">
           <svg
-            className="w-8 h-8 text-gray-400"
+            className="w-8 h-8 text-[var(--muted)]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -180,10 +180,10 @@ async function SearchResults({
             />
           </svg>
         </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <h3 className="text-lg font-medium text-[var(--foreground)] mb-2">
           No officiants found
         </h3>
-        <p className="text-gray-500 mb-6">
+        <p className="text-[var(--muted)] mb-6">
           Try adjusting your search criteria or expanding your radius.
         </p>
         <Link href="/" className="btn-primary inline-block">
@@ -224,7 +224,7 @@ async function SearchResults({
   return (
     <>
       <JsonLd data={[breadcrumbs, itemListSchema]} />
-      <p className="text-sm text-gray-500 mb-6">
+      <p className="text-sm text-[var(--muted)] mb-6">
         Showing <span className="font-medium">{startResult}-{endResult}</span> of{" "}
         <span className="font-medium">{total}</span> officiants
         {searchParams.lat && searchParams.lng ? (
@@ -274,14 +274,14 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
 
   return (
     <>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[var(--background)]">
         {/* Header */}
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+        <header className="bg-[var(--background-card)] border-b border-[var(--border)] sticky top-0 z-10">
           <div className="max-w-6xl mx-auto px-4 py-4">
             <div className="flex items-center justify-between gap-4">
               <Link
                 href="/"
-                className="text-xl font-bold text-[#7D9A82] shrink-0"
+                className="text-xl font-bold text-[var(--primary)] shrink-0"
               >
                 Officiant Finder
               </Link>
@@ -297,7 +297,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
         {/* Main Content */}
         <main className="max-w-6xl mx-auto px-4 py-8">
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-[var(--foreground)]">
               {searchParams.lat && searchParams.lng
                 ? "Officiants near your location"
                 : searchParams.location

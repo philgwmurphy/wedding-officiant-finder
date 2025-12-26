@@ -63,11 +63,11 @@ export default function ClaimProfileForm({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">
+      <div className="bg-[var(--background-card)] rounded-xl shadow-xl max-w-md w-full p-6">
+        <h2 className="text-xl font-semibold text-[var(--foreground)] mb-2">
           Claim Your Profile
         </h2>
-        <p className="text-gray-600 text-sm mb-6">
+        <p className="text-[var(--muted)] text-sm mb-6">
           Verify that you are <strong>{officiantName}</strong> to add your
           contact information to this profile.
         </p>
@@ -76,7 +76,7 @@ export default function ClaimProfileForm({
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-[var(--foreground)] mb-1"
             >
               Email Address *
             </label>
@@ -90,7 +90,7 @@ export default function ClaimProfileForm({
               className="input-field"
               placeholder="your@email.com"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-[var(--muted)] mt-1">
               We&apos;ll send a verification code to this email
             </p>
           </div>
@@ -98,7 +98,7 @@ export default function ClaimProfileForm({
           <div>
             <label
               htmlFor="phone"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-[var(--foreground)] mb-1"
             >
               Phone Number (optional)
             </label>
@@ -116,7 +116,7 @@ export default function ClaimProfileForm({
           <div>
             <label
               htmlFor="website"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-[var(--foreground)] mb-1"
             >
               Website (optional)
             </label>

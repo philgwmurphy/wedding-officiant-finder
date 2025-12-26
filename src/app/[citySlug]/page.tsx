@@ -75,11 +75,11 @@ function ResultsSkeleton() {
       {[...Array(6)].map((_, i) => (
         <div key={i} className="card animate-pulse">
           <div className="flex gap-4">
-            <div className="w-14 h-14 bg-gray-200 rounded-full" />
+            <div className="w-14 h-14 bg-[var(--secondary)] rounded-full" />
             <div className="flex-1">
-              <div className="h-5 bg-gray-200 rounded w-1/3 mb-2" />
-              <div className="h-4 bg-gray-200 rounded w-1/4 mb-3" />
-              <div className="h-6 bg-gray-200 rounded w-1/2" />
+              <div className="h-5 bg-[var(--secondary)] rounded w-1/3 mb-2" />
+              <div className="h-4 bg-[var(--secondary)] rounded w-1/4 mb-3" />
+              <div className="h-6 bg-[var(--secondary)] rounded w-1/2" />
             </div>
           </div>
         </div>
@@ -95,7 +95,7 @@ async function CityResults({ city }: { city: { city: string; lat: number; lng: n
   if (results.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500 mb-4">
+        <p className="text-[var(--muted)] mb-4">
           No officiants found near {city.city}. Try expanding your search.
         </p>
         <Link href="/" className="btn-primary inline-block">
@@ -107,7 +107,7 @@ async function CityResults({ city }: { city: { city: string; lat: number; lng: n
 
   return (
     <>
-      <p className="text-sm text-gray-500 mb-6">
+      <p className="text-sm text-[var(--muted)] mb-6">
         Found <span className="font-medium">{results.length}</span> officiants
         near <span className="font-medium">{city.city}</span>
       </p>
@@ -152,12 +152,12 @@ export default function CityLandingPage({ params }: CityPageProps) {
   return (
     <>
       <JsonLd data={[breadcrumbs, localBusinessSchema]} />
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[var(--background)]">
         {/* Header */}
-        <header className="bg-white border-b border-gray-200">
+        <header className="bg-[var(--background-card)] border-b border-[var(--border)]">
           <div className="max-w-6xl mx-auto px-4 py-4">
             <div className="flex items-center justify-between gap-4">
-              <Link href="/" className="text-xl font-bold text-[#7D9A82] shrink-0">
+              <Link href="/" className="text-xl font-bold text-[var(--primary)] shrink-0">
                 Officiant Finder
               </Link>
               <SearchForm initialLocation={city.city} compact />
@@ -166,12 +166,12 @@ export default function CityLandingPage({ params }: CityPageProps) {
         </header>
 
         {/* Hero Section */}
-        <section className="bg-white border-b border-gray-100">
+        <section className="bg-[var(--background-card)] border-b border-[var(--border)]">
           <div className="max-w-6xl mx-auto px-4 py-12">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-[var(--foreground)] mb-4">
               Wedding Officiants in {city.city}
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl">
+            <p className="text-lg text-[var(--muted)] max-w-2xl">
               Find registered wedding officiants near {city.city}, Ontario.
               Browse local officiants and contact them for your ceremony.
             </p>
@@ -186,37 +186,37 @@ export default function CityLandingPage({ params }: CityPageProps) {
         </main>
 
         {/* FAQ Section */}
-        <section className="bg-white border-t border-gray-100 py-12">
+        <section className="bg-[var(--background-card)] border-t border-[var(--border)] py-12">
           <div className="max-w-4xl mx-auto px-4">
-            <h2 className="text-2xl font-bold text-gray-900 mb-8">
+            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-8">
               Frequently Asked Questions
             </h2>
             <div className="space-y-6">
-              <div className="bg-gray-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <div className="bg-[var(--secondary)] rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-[var(--foreground)] mb-2">
                   How do I find a wedding officiant in {city.city}?
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-[var(--muted)]">
                   Browse our list of registered wedding officiants above, or use the search
                   form to filter by ceremony type. All officiants listed are registered with
                   the Province of Ontario.
                 </p>
               </div>
-              <div className="bg-gray-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <div className="bg-[var(--secondary)] rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-[var(--foreground)] mb-2">
                   What types of wedding ceremonies can officiants in {city.city} perform?
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-[var(--muted)]">
                   Officiants in {city.city} can perform various ceremony types including
                   religious ceremonies (Catholic, Anglican, Jewish, Muslim, Hindu, and more),
                   non-denominational, and secular/civil ceremonies.
                 </p>
               </div>
-              <div className="bg-gray-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <div className="bg-[var(--secondary)] rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-[var(--foreground)] mb-2">
                   Are these officiants legally authorized to perform marriages?
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-[var(--muted)]">
                   Yes, all officiants listed on this site are registered with the Province
                   of Ontario and are legally authorized to perform marriages in Ontario.
                 </p>
@@ -226,15 +226,15 @@ export default function CityLandingPage({ params }: CityPageProps) {
         </section>
 
         {/* Footer */}
-        <footer className="py-8 px-4 border-t border-gray-100">
-          <div className="max-w-5xl mx-auto text-center text-sm text-gray-500">
+        <footer className="py-8 px-4 border-t border-[var(--border)]">
+          <div className="max-w-5xl mx-auto text-center text-sm text-[var(--muted)]">
             <p>
               Data sourced from the{" "}
               <a
                 href="https://data.ontario.ca/dataset/registered-marriage-officiants"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#7D9A82] hover:underline"
+                className="text-[var(--primary)] hover:underline"
               >
                 Ontario Data Catalogue
               </a>
