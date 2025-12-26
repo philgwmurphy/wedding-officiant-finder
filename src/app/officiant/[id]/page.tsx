@@ -36,6 +36,12 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
+      type: "profile",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
     },
   };
 }

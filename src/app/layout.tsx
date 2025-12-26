@@ -19,11 +19,21 @@ export const metadata: Metadata = {
     "wedding ceremony",
     "find officiant",
   ],
+  metadataBase: new URL(SITE_URL),
   openGraph: {
     title: "Find a Wedding Officiant in Ontario",
     description:
       "Search 22,000+ registered wedding officiants across Ontario. Find the perfect match for your ceremony.",
     type: "website",
+    siteName: "Ontario Wedding Officiant Finder",
+    locale: "en_CA",
+    url: SITE_URL,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Find a Wedding Officiant in Ontario",
+    description:
+      "Search 22,000+ registered wedding officiants across Ontario. Find the perfect match for your ceremony.",
   },
   alternates: {
     canonical: SITE_URL,
