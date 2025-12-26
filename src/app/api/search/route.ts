@@ -4,11 +4,14 @@ import { geocodeMunicipality, geocodePostalCode } from "@/lib/geocode";
 import { getActiveFeaturedOfficiants } from "@/lib/monetization-db";
 import type { SearchParams, OfficiantSearchResult } from "@/types/officiant";
 
+// Force dynamic rendering for this API route
+export const dynamic = "force-dynamic";
+
 const POSTAL_CODE_REGEX = /^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/i;
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
+    const searchParams = request.nextUrl.searchParams;
 
     const params: SearchParams = {
       location: searchParams.get("location") || undefined,
