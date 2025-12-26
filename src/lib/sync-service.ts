@@ -394,16 +394,40 @@ async function updateCachedData(supabase: SupabaseClient): Promise<void> {
 
 /**
  * Check if a sync is currently running
+ * Considers syncs running for more than 10 minutes as stale
  */
 export async function isSyncRunning(): Promise<boolean> {
   const supabase = getSupabaseClient();
+  const STALE_THRESHOLD_MS = 10 * 60 * 1000; // 10 minutes
 
   const { data } = await supabase
     .from("sync_log")
-    .select("status")
+    .select("id, status, started_at")
     .eq("status", "running")
     .order("started_at", { ascending: false })
     .limit(1);
 
-  return (data?.length ?? 0) > 0;
+  if (!data || data.length === 0) {
+    return false;
+  }
+
+  const runningSync = data[0];
+  const startedAt = new Date(runningSync.started_at).getTime();
+  const now = Date.now();
+
+  // If sync has been running for more than 10 minutes, mark it as stale/failed
+  if (now - startedAt > STALE_THRESHOLD_MS) {
+    await supabase
+      .from("sync_log")
+      .update({
+        status: "failed",
+        completed_at: new Date().toISOString(),
+        error_message: "Sync timed out (exceeded 10 minutes)",
+      })
+      .eq("id", runningSync.id);
+
+    return false;
+  }
+
+  return true;
 }
