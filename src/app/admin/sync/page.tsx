@@ -45,6 +45,7 @@ export default function AdminSyncPage() {
     try {
       const savedPassword = localStorage.getItem("admin_password");
       const response = await fetch("/api/admin/sync", {
+        method: "GET",
         headers: {
           Authorization: `Bearer ${savedPassword}`,
         },
@@ -82,6 +83,12 @@ export default function AdminSyncPage() {
   }, [syncing, fetchSyncStatus]);
 
   const handleStartSync = async () => {
+    // Confirm before starting sync
+    const confirmed = window.confirm(
+      "Are you sure you want to start a data sync? This will fetch all officiants from the Ontario Data Catalogue and may take 1-2 minutes."
+    );
+    if (!confirmed) return;
+
     setSyncing(true);
     setSyncResult(null);
     setSyncError(null);
